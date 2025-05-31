@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arunachal Pradesh - Art and Nature</title>
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #c5f598;
+            color: #333;
+        }
+        header {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+        }
+        section {
+            padding: 3rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h2 {
+            font-size: 2rem;
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: calc(33.333% - 2rem);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .card-content {
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .card-content h3 {
+            font-size: 1.5rem;
+            color: #2E7D32;
+            margin-bottom: 0.5rem;
+        }
+        .card-content p {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+        .card-content button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .card-content button:hover {
+            background: #2E7D32;
+        }
+        @media (max-width: 768px) {
+            .card {
+                width: calc(50% - 2rem);
+            }
+        }
+        @media (max-width: 480px) {
+            .card {
+                width: 100%;
+            }
+        }
+        footer {
+            background: #032f8d;
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Arunachal Pradesh - Art and Nature</h1>
+    </header>
+    <section>
+        <h2>Art</h2>
+        <div class="container">
+            <div class="card">
+                <img src="https://www.superprof.co.in/blog/wp-content/uploads/2024/01/thangka.jpg" alt="Thangka Paintings">
+                <div class="card-content">
+                    <h3>Thangka Paintings</h3>
+                    <p>Inspired by Buddhist traditions and local flora.</p>
+                    <button onclick="window.location.href='https://en.wikipedia.org/wiki/Thangka'">Learn More</button>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://cpimg.tistatic.com/6749919/b/4/wood-carving-statue.jpg" alt="Wood Carving">
+                <div class="card-content">
+                    <h3>Wood Carving</h3>
+                    <p>Features Mithun motifs and forest spirits.</p>
+                    <button onclick="window.location.href='https://en.wikipedia.org/wiki/Wood_carving'">Learn More</button>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDW58Ai_mMiElRTdBz-dlI2kKMGe6sKR6PgA&s" alt="Textile Weaving">
+                <div class="card-content">
+                    <h3>Textile Weaving</h3>
+                    <p>Uses natural dyes from local plants.</p>
+                    <button onclick="window.location.href='https://en.wikipedia.org/wiki/Weaving'">Learn More</button>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://tawangtourism.in/wp-content/uploads/2015/02/DSC_69351-300x300.jpg" alt="Mask Making">
+                <div class="card-content">
+                    <h3>Mask Making</h3>
+                    <p>Represents tribal deities and nature spirits.</p>
+                    <button onclick="window.location.href='https://en.wikipedia.org/wiki/Mask'">Learn More</button>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://media.nature.com/lw1200/magazine-assets/d44151-024-00085-9/d44151-024-00085-9_27192024.png" alt="Blue Ant">
+                <div class="card-content">
+                    <h3>Blue Ant</h3>
+                    <p>A unique insect found in the region, often depicted in local art.</p>
+                    <button onclick="window.location.href='https://en.wikipedia.org/wiki/Ant'">Learn More</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <h2>Nature</h2>
+        <div class="container">
+            <div class="card">
+                <img src="https://www.researchgate.net/publication/345850491/figure/fig2/AS:957748271398917@1605356390881/A-female-Mithun-Bos-frontalis-in-her-natural-habitat.ppm" alt="Mithun">
+                <div class="card-content">
+                    <h3>Mithun</h3>
+                    <p>Symbolizes wealth and features in local art.</p>
+                    <button onclick="window.location.href='https://en.wikipedia.org/wiki/Gayal'">Learn More</button>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://www.himalayanclub.org/images/hj/72/Meconopsis-gakyidiana.jpg" alt="Blue Poppy">
+                <div class="card-content">
+                    <h3>Blue Poppy</h3>
+                    <p>A rare Himalayan flower in textile art.</p>
+                    <button onclick="window.location.href='https://en.wikipedia.org/wiki/Meconopsis'">Learn More</button>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTepZ-hjgk1_xLomNj1QOKbeIInOMsCdDKQfw&s" alt="Clouded Leopard">
+                <div class="card-content">
+                    <h3>Clouded Leopard</h3>
+                    <p>State animal, often represented in tribal motifs.</p>
+                    <button onclick="window.location.href='https://en.wikipedia.org/wiki/Clouded_leopard'">Learn More</button>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://www.flowersofindia.net/catalog/slides/Grand%20Rhododendron.jpg" alt="Rhododendron">
+                <div class="card-content">
+                    <h3>Rhododendron</h3>
+                    <p>State flower, used in traditional crafts.</p>
+                    <button onclick="window.location.href='https://en.wikipedia.org/wiki/Rhododendron'">Learn More</button>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVS4dtPkNKEr5KrzzLgHPn9kwRKKwWT_HV3g&s" alt="Orchids">
+                <div class="card-content">
+                    <h3>Orchids</h3>
+                    <p>Diverse species found in the region, influencing local art.</p>
+                    <button onclick="window.location.href='https://en.wikipedia.org/wiki/Orchidaceae'">Learn More</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer>
+        &copy; 2025 Arunachal Pradesh - Art and Nature. All rights reserved.
+    </footer>
+</body>
+</html>
