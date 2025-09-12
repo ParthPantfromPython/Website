@@ -3,10 +3,12 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Interactive Periodic Table — Compact & Study (HTML)</title>
+<title>🌈 Interactive Periodic Table — Modern Chemistry Explorer</title>
+<link rel="icon" href="https://img.icons8.com/color/48/periodic-table.png" type="image/png">
+<meta name="description" content="A visually stunning, interactive periodic table of elements. Explore, search, quiz, and learn chemistry with modern UI.">
 <style>
 :root{
-  --bg:#eaf2ff;
+  --bg:linear-gradient(135deg, #eaf2ff 0%, #cfe6ff 60%, #f6eaff 100%), linear-gradient(120deg, #f0f9ff 0%, #e0e7ff 100%);
   --card:#ffffff;
   --muted:#334155;
   --text:#071028;
@@ -75,22 +77,307 @@ body.dark .btn{ background: linear-gradient(180deg,#0b1226,#07101e); color:#bcd6
 </style>
 </head>
 <body>
-<div class="header">
-  <div>
-    <div class="title">Interactive Periodic Table</div>
-    <div style="font-size:12px;color:var(--muted)">Hover for quick info — click for full details</div>
+  <!-- PWA manifest and service worker registration -->
+  <link rel="manifest" href="manifest.json">
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('sw.js').then(function(reg) {
+        // Service worker registered
+      });
+    });
+  }
+  </script>
+<header class="header" style="background:var(--card);box-shadow:0 2px 16px rgba(2,8,23,0.07);border-radius:14px;margin-bottom:18px;">
+  <div style="display:flex;flex-direction:column;gap:2px">
+    <div class="title" style="font-size:2rem;letter-spacing:-1px;color:var(--accent);margin-bottom:2px">Interactive Periodic Table</div>
+    <div style="font-size:13px;color:var(--muted)">Hover for quick info — click for full details</div>
   </div>
-  <div class="controls">
-    <input id="search" class="input" placeholder="Search name, symbol or #" aria-label="search">
-    <div id="autocomplete" style="position:relative"></div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <button id="compactBtn" class="btn" title="Compact / Study">Compact</button>
-      <input id="zoomSlider" class="slider" type="range" min="28" max="78" value="48" title="Zoom slider">
-      <button id="resetBtn" class="pill">Reset View</button>
-      <button id="themeToggle" class="btn">🌗</button>
+  <div class="controls" style="gap:18px"></div>
+    <div style="display:flex;flex-direction:column;gap:8px"></div>
+      <div style="display:flex;gap:8px;align-items:center"></div>
+        <input id="search" class="input" placeholder="Search name, symbol or #" aria-label="search" style="font-size:15px">
+        <div id="autocomplete" style="position:relative"></div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button id="compactBtn" class="btn" title="Compact / Study">Compact</button>
+        <input id="zoomSlider" class="slider" type="range" min="28" max="78" value="48" title="Zoom slider">
+        <button id="resetBtn" class="pill">Reset View</button>
+        <button id="themeToggle" class="btn" title="Toggle dark/light mode">🌗</button>
+      </div>
     </div>
   </div>
-</div>
+</header>
+
+<!-- Quiz UI -->
+<section id="quizBox" style="max-width:500px;margin:32px auto 0;background:var(--card);border-radius:14px;box-shadow:0 8px 32px rgba(2,8,23,0.10);padding:24px;display:none">
+  <div style="font-weight:700;font-size:1.3rem;margin-bottom:10px;color:var(--accent)">Periodic Table Quiz</div>
+  <div style="margin-bottom:12px">
+    <label for="quizMode" style="font-size:14px;font-weight:600">Select Mode:</label>
+    <select id="quizMode" style="margin-left:8px;padding:6px 10px;border-radius:8px">
+      <option value="easy">Easy (5 Qs, 1–20)</option>
+      <option value="medium">Medium (20 Qs, 1–50)</option>
+      <option value="hard">Hard (30 Qs, 1–118)</option>
+      <option value="extreme">Extreme (100 Qs, 1–118)</option>
+    </select>
+    <button id="startQuiz" class="btn" style="margin-left:12px">Start Quiz</button>
+    <button id="stopQuiz" class="pill" style="margin-left:8px;display:none">Stop Quiz</button>
+  </div>
+  <div id="quizArea" style="margin-top:16px"></div>
+</section>
+<button id="quizToggle" class="btn" style="position:fixed;bottom:24px;right:24px;z-index:99">🧪 Quiz</button>
+
+<script>
+const quizBox = document.getElementById('quizBox');
+const quizToggle = document.getElementById('quizToggle');
+const quizMode = document.getElementById('quizMode');
+const startQuiz = document.getElementById('startQuiz');
+const stopQuiz = document.getElementById('stopQuiz');
+const quizArea = document.getElementById('quizArea');
+
+let quizElements = [];
+let quizIndex = 0;
+let quizScore = 0;
+let quizActive = false;
+let quizTotal = 0;
+let quizNegative = 0;
+
+// Show/hide quiz box
+quizToggle.addEventListener('click', ()=>{
+  quizBox.style.display = quizBox.style.display==='none' ? 'block' : 'none';
+});
+
+// Start quiz
+startQuiz.addEventListener('click', ()=>{
+  let mode = quizMode.value;
+  let count = 5;
+  if(mode==='easy'){ quizElements = ELEMENTS.slice(0,20); count=5; quizNegative=0.25; }
+  else if(mode==='medium'){ quizElements = ELEMENTS.slice(0,50); count=20; quizNegative=0.5; }
+  else if(mode==='hard'){ quizElements = ELEMENTS.slice(0,118); count=30; quizNegative=1; }
+  else { quizElements = ELEMENTS.slice(0,118); count=100; quizNegative=2; }
+  quizElements = quizElements.sort(()=>Math.random()-0.5).slice(0,count); // shuffle and pick count
+  quizIndex = 0;
+  quizScore = 0;
+  quizTotal = count;
+  quizActive = true;
+  stopQuiz.style.display = 'inline-block';
+  showQuizQuestion();
+});
+
+// Stop quiz mid-way
+stopQuiz.addEventListener('click', ()=>{
+  quizActive = false;
+  quizArea.innerHTML = `<div style="font-size:16px;font-weight:700;margin-bottom:8px">Quiz Stopped!</div>
+    <div>Your score: <strong>${quizScore} / ${quizTotal}</strong></div>
+    <div>Questions attempted: <strong>${quizIndex}</strong></div>
+    <button class="btn" id="quizRestart" style="margin-top:12px">Restart</button>`;
+  stopQuiz.style.display = 'none';
+  document.getElementById('quizRestart').onclick = ()=>{ startQuiz.click(); };
+});
+
+// Show question
+function showQuizQuestion(){
+  if(!quizActive || quizIndex >= quizElements.length){
+    quizArea.innerHTML = `<div style="font-size:16px;font-weight:700;margin-bottom:8px">Quiz Complete!</div>
+      <div>Your score: <strong>${quizScore} / ${quizTotal}</strong></div>
+      <button class="btn" id="quizRestart" style="margin-top:12px">Restart</button>`;
+    stopQuiz.style.display = 'none';
+    document.getElementById('quizRestart').onclick = ()=>{ startQuiz.click(); };
+    quizActive = false;
+    return;
+  }
+  const el = quizElements[quizIndex];
+  const qType = Math.random()<0.5 ? 'name' : 'symbol';
+  let question, answer;
+  if(qType==='name'){
+    question = `What is the symbol for <strong>${el.name}</strong>?`;
+    answer = el.sym;
+  }else{
+    question = `What is the name of the element with symbol <strong>${el.sym}</strong>?`;
+    answer = el.name;
+  }
+  quizArea.innerHTML = `
+    <div style="font-size:15px;margin-bottom:10px">${question}</div>
+    <input id="quizInput" class="input" placeholder="Your answer" autocomplete="off" style="width:70%">
+    <button id="quizSubmit" class="btn" style="margin-left:10px">Submit</button>
+    <div id="quizFeedback" style="margin-top:10px;font-size:13px"></div>
+    <div style="margin-top:14px;color:var(--muted);font-size:13px">Question ${quizIndex+1} of ${quizTotal} | Score: ${quizScore}</div>
+    <div style="margin-top:4px;color:#f87171;font-size:12px">Negative marking: -${quizNegative} for wrong answer</div>
+  `;
+  document.getElementById('quizSubmit').onclick = ()=>{
+    const val = document.getElementById('quizInput').value.trim();
+    const correct = val.toLowerCase() === answer.toLowerCase();
+    const feedback = document.getElementById('quizFeedback');
+    if(correct){
+      feedback.textContent = '✅ Correct!';
+      quizScore++;
+    }else{
+      feedback.textContent = `❌ Incorrect. Correct answer: ${answer} (-${quizNegative})`;
+      quizScore -= quizNegative;
+      if(quizScore<0) quizScore=0;
+    }
+    setTimeout(()=>{ quizIndex++; showQuizQuestion(); }, 900);
+  };
+  document.getElementById('quizInput').addEventListener('keydown', function(e){
+    if(e.key==='Enter') document.getElementById('quizSubmit').click();
+  });
+}
+</script>
+
+<!-- Login/Sign Up Interface (hidden by default) -->
+<section id="loginBox" style="max-width:400px;margin:32px auto;background:var(--card);border-radius:14px;box-shadow:0 8px 32px rgba(2,8,23,0.10);padding:24px;display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:100;">
+  <div style="font-weight:700;font-size:1.2rem;margin-bottom:10px;color:var(--accent)">Login / Sign Up</div>
+  <form id="loginForm" autocomplete="off">
+    <div style="margin-bottom:12px">
+      <label for="username" style="font-size:14px;font-weight:600">Username:</label>
+      <input id="username" name="username" class="input" required style="width:100%;margin-top:6px">
+    </div>
+    <div style="margin-bottom:16px">
+      <label for="password" style="font-size:14px;font-weight:600">Password:</label>
+      <input id="password" name="password" type="password" class="input" required style="width:100%;margin-top:6px">
+    </div>
+    <button type="submit" class="btn" style="width:100%">Login</button>
+    <button type="button" id="signupBtn" class="pill" style="width:100%;margin-top:8px">Sign Up</button>
+    <div id="loginFeedback" style="margin-top:10px;font-size:13px;color:#f87171"></div>
+  </form>
+</section>
+<button id="loginToggle" class="btn" style="position:fixed;bottom:24px;right:156px;z-index:99">🔐 Login/Sign Up</button>
+<script>
+// User storage using localStorage
+const loginForm = document.getElementById('loginForm');
+const loginBox = document.getElementById('loginBox');
+const loginFeedback = document.getElementById('loginFeedback');
+const signupBtn = document.getElementById('signupBtn');
+const loginToggle = document.getElementById('loginToggle');
+
+function getUsers() {
+  return JSON.parse(localStorage.getItem('users') || '{}');
+}
+function saveUser(username, password) {
+  const users = getUsers();
+  users[username] = password;
+  localStorage.setItem('users', JSON.stringify(users));
+}
+function checkUser(username, password) {
+  const users = getUsers();
+  return users[username] && users[username] === password;
+}
+function setLoggedIn(username) {
+  localStorage.setItem('loginData', JSON.stringify({ username }));
+}
+function getLoggedInUser() {
+  const data = localStorage.getItem('loginData');
+  return data ? JSON.parse(data).username : null;
+}
+function isLoggedIn() {
+  return !!getLoggedInUser();
+}
+function showLoginBox(show) {
+  loginBox.style.display = show ? 'block' : 'none';
+}
+loginToggle.addEventListener('click', () => {
+  showLoginBox(loginBox.style.display === 'none');
+});
+function logout() {
+  localStorage.removeItem('loginData');
+  showLoginBox(true);
+}
+if (isLoggedIn()) {
+  showLoginBox(false);
+} else {
+  showLoginBox(false); // hidden by default, shown on button click
+}
+loginForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const username = loginForm.username.value.trim();
+  const password = loginForm.password.value;
+  if (username && password) {
+    if (checkUser(username, password)) {
+      setLoggedIn(username);
+      loginFeedback.textContent = '';
+      showLoginBox(false);
+    } else {
+      loginFeedback.textContent = 'Invalid username or password.';
+    }
+  } else {
+    loginFeedback.textContent = 'Please enter both username and password.';
+  }
+});
+signupBtn.addEventListener('click', function() {
+  const username = loginForm.username.value.trim();
+  const password = loginForm.password.value;
+  if (username && password) {
+    const users = getUsers();
+    if (users[username]) {
+      loginFeedback.textContent = 'User already exists. Please login.';
+    } else {
+      saveUser(username, password);
+      setLoggedIn(username);
+      loginFeedback.textContent = '';
+      showLoginBox(false);
+    }
+  } else {
+    loginFeedback.textContent = 'Please enter both username and password.';
+  }
+});
+</script>
+
+<!-- Shortcut UI (hidden by default) -->
+<button id="helpBtn" class="btn" style="position:fixed;bottom:24px;right:90px;z-index:99">❔ Help</button>
+<section id="shortcutBox" style="max-width:400px;margin:24px auto 0;background:var(--card);border-radius:14px;box-shadow:0 8px 32px rgba(2,8,23,0.10);padding:18px;display:none">
+  <div style="font-weight:700;font-size:1.1rem;margin-bottom:8px;color:var(--accent)">Keyboard Shortcuts</div>
+  <ul style="font-size:13px;line-height:1.7;margin:0;padding-left:18px">
+    <li><strong>/</strong> — Focus search box</li>
+    <li><strong>Esc</strong> — Close modal or autocomplete</li>
+    <li><strong>Ctrl+Q</strong> — Toggle Quiz UI</li>
+    <li><strong>Ctrl+L</strong> — Toggle Login UI</li>
+    <li><strong>Ctrl+T</strong> — Toggle Theme</li>
+    <li><strong>Ctrl+R</strong> — Reset view</li>
+  </ul>
+</section>
+<script>
+// Show/hide shortcut box when help button is clicked
+const helpBtn = document.getElementById('helpBtn');
+const shortcutBox = document.getElementById('shortcutBox');
+helpBtn.addEventListener('click', () => {
+  shortcutBox.style.display = shortcutBox.style.display === 'none' ? 'block' : 'none';
+});
+
+// Shortcut logic
+document.addEventListener('keydown', function(e) {
+  // Focus search
+  if (e.key === '/' && document.activeElement !== SEARCH) {
+    e.preventDefault();
+    SEARCH.focus();
+  }
+  // Close modal/autocomplete/shortcut box
+  if (e.key === 'Escape') {
+    if (MODAL.open) MODAL.close();
+    AUTOCLOSE();
+    shortcutBox.style.display = 'none';
+  }
+  // Toggle Quiz UI
+  if (e.ctrlKey && e.key.toLowerCase() === 'q') {
+    e.preventDefault();
+    quizToggle.click();
+  }
+  // Toggle Login UI
+  if (e.ctrlKey && e.key.toLowerCase() === 'l') {
+    e.preventDefault();
+    showLoginBox(loginBox.style.display === 'none');
+  }
+  // Toggle Theme
+  if (e.ctrlKey && e.key.toLowerCase() === 't') {
+    e.preventDefault();
+    THEME.click();
+  }
+  // Reset View
+  if (e.ctrlKey && e.key.toLowerCase() === 'r') {
+    e.preventDefault();
+    RESET.click();
+  }
+});
+</script>
 
 <div class="wrap">
   <div class="table-wrap">
@@ -249,7 +536,52 @@ const ELEMENTS = [
 {"n":117,"sym":"Ts","name":"Tennessine","cat":"unknown","mass":"294","state":"unknown","group":17,"period":7,"config":"[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁵","about":"Synthetic."},
 {"n":118,"sym":"Og","name":"Oganesson","cat":"unknown","mass":"294","state":"unknown","group":18,"period":7,"config":"[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁶","about":"Heaviest known element."}
 ];
+/* Speech Synthesis UI */
+function speakElement(el) {
+  if (!('speechSynthesis' in window)) return;
+  const info = [
+    `Element ${el.name}, symbol ${el.sym}, atomic number ${el.n}.`,
+    `Category: ${CATMAP[el.cat] || el.cat}.`,
+    `Atomic mass: ${el.mass}.`,
+    `Electron configuration: ${el.config || 'unknown'}.`,
+    `Period: ${el.period}, Group: ${el.group}.`,
+    `State at standard temperature and pressure: ${el.state || 'unknown'}.`,
+    el.about ? `About: ${el.about}` : ''
+  ].join(' ');
+  const utter = new SpeechSynthesisUtterance(info);
+  utter.rate = 1;
+  utter.pitch = 1;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utter);
+}
 
+// Add speak button to modal
+const speakBtn = document.createElement('button');
+speakBtn.textContent = '🔊 Speak Info';
+speakBtn.className = 'btn';
+speakBtn.style.width = '100%';
+speakBtn.style.marginBottom = '8px';
+document.querySelector('.rightbox').insertBefore(speakBtn, document.querySelector('.rightbox').firstChild);
+
+let lastElement = null;
+function openModal(el) {
+  lastElement = el;
+  document.getElementById('mSym').textContent = el.sym;
+  document.getElementById('mName').textContent = el.name;
+  document.getElementById('mSub').textContent = `Atomic #${el.n} • ${CATMAP[el.cat] || el.cat}`;
+  document.getElementById('mAbout').textContent = el.about || '—';
+  document.getElementById('mMass').textContent = el.mass;
+  document.getElementById('mConfig').textContent = el.config || '—';
+  document.getElementById('mPG').textContent = `${el.period} / ${el.group}`;
+  document.getElementById('mState').textContent = el.state || '—';
+  document.getElementById('mQuick').textContent = `${el.sym} — ${el.name}`;
+  document.getElementById('mCat').textContent = CATMAP[el.cat] || el.cat;
+  if (!MODAL.open) MODAL.showModal();
+}
+
+speakBtn.onclick = function() {
+  if (lastElement) speakElement(lastElement);
+};
 const CATMAP = { alkali:'Alkali metal', alkaline:'Alkaline earth metal', transition:'Transition metal', post:'Post-transition metal', metalloid:'Metalloid', poly:'Polyatomic nonmetal', diatomic:'Diatomic nonmetal', halogen:'Halogen', noble:'Noble gas', lanth:'Lanthanide', act:'Actinide', unknown:'Unknown' };
 
 const TABLE = document.getElementById('table');
