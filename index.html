@@ -8,7 +8,7 @@
 <meta name="description" content="A visually stunning, interactive periodic table of elements. Explore, search, quiz, and learn chemistry with modern UI.">
 <style>
 :root{
-  --bg:linear-gradient(135deg, #eaf2ff 0%, #cfe6ff 60%, #f6eaff 100%), linear-gradient(120deg, #f0f9ff 0%, #e0e7ff 100%);
+  --bg:linear-gradient(135deg, #6ce9ff 0%, #007bff 60%, #ffffff 100%), linear-gradient(120deg, #756a3a 0%, #fbff00 100%);
   --card:#ffffff;
   --muted:#334155;
   --text:#071028;
@@ -536,6 +536,217 @@ const ELEMENTS = [
 {"n":117,"sym":"Ts","name":"Tennessine","cat":"unknown","mass":"294","state":"unknown","group":17,"period":7,"config":"[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁵","about":"Synthetic."},
 {"n":118,"sym":"Og","name":"Oganesson","cat":"unknown","mass":"294","state":"unknown","group":18,"period":7,"config":"[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁶","about":"Heaviest known element."}
 ];
+/* ------------------ GROUP COLORS ------------------ */
+const GROUP_COLORS = {
+  "alkali metal": "#f87171",          // red
+  "alkaline earth metal": "#fbbf24",  // yellow
+  "transition metal": "#60a5fa",      // blue
+  "post-transition metal": "#93c5fd", // light blue
+  "metalloid": "#34d399",             // green
+  "nonmetal": "#3b82f6",              // dark blue
+  "halogen": "#f59e0b",               // orange
+  "noble gas": "#a78bfa",             // purple
+  "lanthanide": "#f472b6",            // pink
+  "actinide": "#ef4444",              // deep red
+  "unknown": "#9e9e9e"                // gray fallback
+};
+
+/* ------------------ ELEMENT GROUPS ------------------ */
+const ELEMENT_GROUPS = {
+  H: "nonmetal", He: "noble gas",
+  Li: "alkali metal", Be: "alkaline earth metal", B: "metalloid", C: "nonmetal", N: "nonmetal", O: "nonmetal", F: "halogen", Ne: "noble gas",
+  Na: "alkali metal", Mg: "alkaline earth metal", Al: "post-transition metal", Si: "metalloid", P: "nonmetal", S: "nonmetal", Cl: "halogen", Ar: "noble gas",
+  K: "alkali metal", Ca: "alkaline earth metal", Sc: "transition metal", Ti: "transition metal", V: "transition metal", Cr: "transition metal", Mn: "transition metal", Fe: "transition metal", Co: "transition metal", Ni: "transition metal", Cu: "transition metal", Zn: "transition metal",
+  Ga: "post-transition metal", Ge: "metalloid", As: "metalloid", Se: "nonmetal", Br: "halogen", Kr: "noble gas",
+  Rb: "alkali metal", Sr: "alkaline earth metal", Y: "transition metal", Zr: "transition metal", Nb: "transition metal", Mo: "transition metal", Tc: "transition metal", Ru: "transition metal", Rh: "transition metal", Pd: "transition metal", Ag: "transition metal", Cd: "transition metal",
+  In: "post-transition metal", Sn: "post-transition metal", Sb: "metalloid", Te: "metalloid", I: "halogen", Xe: "noble gas",
+  Cs: "alkali metal", Ba: "alkaline earth metal", La: "lanthanide", Ce: "lanthanide", Pr: "lanthanide", Nd: "lanthanide", Pm: "lanthanide", Sm: "lanthanide", Eu: "lanthanide", Gd: "lanthanide",
+  Tb: "lanthanide", Dy: "lanthanide", Ho: "lanthanide", Er: "lanthanide", Tm: "lanthanide", Yb: "lanthanide", Lu: "lanthanide",
+  Hf: "transition metal", Ta: "transition metal", W: "transition metal", Re: "transition metal", Os: "transition metal", Ir: "transition metal", Pt: "transition metal", Au: "transition metal", Hg: "transition metal",
+  Tl: "post-transition metal", Pb: "post-transition metal", Bi: "post-transition metal", Po: "metalloid", At: "halogen", Rn: "noble gas",
+  Fr: "alkali metal", Ra: "alkaline earth metal", Ac: "actinide", Th: "actinide", Pa: "actinide", U: "actinide", Np: "actinide", Pu: "actinide", Am: "actinide", Cm: "actinide",
+  Bk: "actinide", Cf: "actinide", Es: "actinide", Fm: "actinide", Md: "actinide", No: "actinide", Lr: "actinide",
+  Rf: "transition metal", Db: "transition metal", Sg: "transition metal", Bh: "transition metal", Hs: "transition metal", Mt: "transition metal", Ds: "transition metal", Rg: "transition metal", Cn: "transition metal",
+  Nh: "post-transition metal", Fl: "post-transition metal", Mc: "post-transition metal", Lv: "post-transition metal", Ts: "halogen", Og: "noble gas"
+};
+
+/* ------------------ ATOMIC NUMBERS ------------------ */
+const ATOMIC_NUMBERS = {
+  H: 1, He: 2,
+  Li: 3, Be: 4, B: 5, C: 6, N: 7, O: 8, F: 9, Ne: 10,
+  Na: 11, Mg: 12, Al: 13, Si: 14, P: 15, S: 16, Cl: 17, Ar: 18,
+  K: 19, Ca: 20, Sc: 21, Ti: 22, V: 23, Cr: 24, Mn: 25, Fe: 26, Co: 27, Ni: 28, Cu: 29, Zn: 30,
+  Ga: 31, Ge: 32, As: 33, Se: 34, Br: 35, Kr: 36,
+  Rb: 37, Sr: 38, Y: 39, Zr: 40, Nb: 41, Mo: 42, Tc: 43, Ru: 44, Rh: 45, Pd: 46, Ag: 47, Cd: 48,
+  In: 49, Sn: 50, Sb: 51, Te: 52, I: 53, Xe: 54,
+  Cs: 55, Ba: 56, La: 57, Ce: 58, Pr: 59, Nd: 60, Pm: 61, Sm: 62, Eu: 63, Gd: 64,
+  Tb: 65, Dy: 66, Ho: 67, Er: 68, Tm: 69, Yb: 70, Lu: 71,
+  Hf: 72, Ta: 73, W: 74, Re: 75, Os: 76, Ir: 77, Pt: 78, Au: 79, Hg: 80,
+  Tl: 81, Pb: 82, Bi: 83, Po: 84, At: 85, Rn: 86,
+  Fr: 87, Ra: 88, Ac: 89, Th: 90, Pa: 91, U: 92, Np: 93, Pu: 94, Am: 95, Cm: 96,
+  Bk: 97, Cf: 98, Es: 99, Fm: 100, Md: 101, No: 102, Lr: 103,
+  Rf: 104, Db: 105, Sg: 106, Bh: 107, Hs: 108, Mt: 109, Ds: 110, Rg: 111, Cn: 112,
+  Nh: 113, Fl: 114, Mc: 115, Lv: 116, Ts: 117, Og: 118
+};
+
+/* ------------------ GLOW EFFECT CSS ------------------ */
+(function addGlowCSS() {
+  if (!document.getElementById("glow-style")) {
+    const style = document.createElement("style");
+    style.id = "glow-style";
+    style.textContent = `
+      @keyframes glowPulse {
+        0%   { box-shadow: 0 0 0px rgba(0,0,0,0); }
+        50%  { box-shadow: 0 0 12px currentColor; }
+        100% { box-shadow: 0 0 0px rgba(0,0,0,0); }
+      }
+      .glow-highlight {
+        animation: glowPulse 1.5s infinite;
+        border-radius: 6px;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+})();
+
+/* ------------------ ATOM GENERATOR ------------------ */
+function generateAtomSVG(symbol, atomicNumber) {
+  const size = 120;
+  const center = size / 2;
+  const nucleusRadius = 12;
+
+  const group = ELEMENT_GROUPS[symbol] || "unknown";
+  const nucleusColor = GROUP_COLORS[group] || GROUP_COLORS["unknown"];
+
+  const shellConfig = [2, 8, 18, 32, 32, 18, 8];
+  let electrons = atomicNumber;
+  let shells = [];
+  for (let i = 0; i < shellConfig.length && electrons > 0; i++) {
+    let take = Math.min(shellConfig[i], electrons);
+    shells.push(take);
+    electrons -= take;
+  }
+
+  let svg = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">`;
+  svg += `<circle cx="${center}" cy="${center}" r="${nucleusRadius}" fill="${nucleusColor}"/>`;
+
+  shells.forEach((count, shellIndex) => {
+    let radius = 30 + shellIndex * 15;
+    svg += `<circle cx="${center}" cy="${center}" r="${radius}" fill="none" stroke="rgba(0,0,0,0.15)" />`;
+    for (let i = 0; i < count; i++) {
+      let id = `orbit${shellIndex}${symbol}`;
+      svg += `
+        <circle r="4" fill="#fff">
+          <animateMotion dur="${2 + shellIndex}s" repeatCount="indefinite" rotate="auto">
+            <mpath xlink:href="#${id}" />
+          </animateMotion>
+        </circle>
+        <path id="${id}" 
+          d="M ${center - radius},${center} 
+             a ${radius},${radius} 0 1,0 ${radius * 2},0 
+             a ${radius},${radius} 0 1,0 -${radius * 2},0" fill="none"/>
+      `;
+    }
+  });
+
+  svg += `</svg>`;
+  return svg;
+}
+
+/* ------------------ ATOM FETCHER ------------------ */
+function getAtomSVG(sym) {
+  if (ATOMIC_NUMBERS[sym]) {
+    return generateAtomSVG(sym, ATOMIC_NUMBERS[sym]);
+  }
+  return `<svg width="120" height="120"><circle cx="60" cy="60" r="40" fill="#cfcfcf" opacity="0.15"/><circle cx="60" cy="60" r="12" fill="#9e9e9e"/></svg>`;
+}
+
+/* ------------------ LEGEND ------------------ */
+function addLegend() {
+  let legendWrapper = document.getElementById("legendWrapper");
+  if (!legendWrapper) {
+    legendWrapper = document.createElement("div");
+    legendWrapper.id = "legendWrapper";
+    legendWrapper.style = "margin-top:12px;text-align:center;";
+
+    const toggleBtn = document.createElement("button");
+    toggleBtn.textContent = "Show Legend";
+    toggleBtn.style = "padding:4px 10px;margin-bottom:6px;font-size:12px;cursor:pointer;border:1px solid #ccc;border-radius:6px;background:#f9f9f9;";
+    legendWrapper.appendChild(toggleBtn);
+
+    const legendBox = document.createElement("div");
+    legendBox.id = "legendBox";
+    legendBox.style = "display:none;flex-wrap:wrap;gap:10px;margin-top:6px;font-size:12px;justify-content:center;";
+    legendWrapper.appendChild(legendBox);
+
+    document.querySelector(".modal").appendChild(legendWrapper);
+
+    Object.entries(GROUP_COLORS).forEach(([group, color]) => {
+      const item = document.createElement("div");
+      item.style = "display:flex;align-items:center;gap:4px;cursor:pointer;";
+      item.innerHTML = `<span style="width:14px;height:14px;border-radius:50%;background:${color};display:inline-block;"></span> ${group}`;
+      legendBox.appendChild(item);
+
+      item.addEventListener("mouseenter", () => highlightGroup(group, true, color));
+      item.addEventListener("mouseleave", () => highlightGroup(group, false, color));
+    });
+
+    toggleBtn.addEventListener("click", () => {
+      if (legendBox.style.display === "none") {
+        legendBox.style.display = "flex";
+        toggleBtn.textContent = "Hide Legend";
+      } else {
+        legendBox.style.display = "none";
+        toggleBtn.textContent = "Show Legend";
+      }
+    });
+  }
+}
+
+/* ------------------ HIGHLIGHTING ------------------ */
+function highlightGroup(group, on, color) {
+  Object.entries(ELEMENT_GROUPS).forEach(([symbol, g]) => {
+    if (g === group) {
+      const elBox = document.querySelector(`[data-symbol="${symbol}"]`);
+      if (elBox) {
+        if (on) {
+          elBox.classList.add("glow-highlight");
+          elBox.style.color = color;
+        } else {
+          elBox.classList.remove("glow-highlight");
+          elBox.style.color = "";
+        }
+      }
+    }
+  });
+}
+
+/* ------------------ ATOM DISPLAY ------------------ */
+function showAtomAnimation(el) {
+  let atomBox = document.getElementById("atomBox");
+  if (!atomBox) {
+    atomBox = document.createElement("div");
+    atomBox.id = "atomBox";
+    atomBox.style = "display:flex;justify-content:center;align-items:center;margin-bottom:12px;";
+    document.querySelector(".modal").insertBefore(atomBox, document.querySelector(".modal").firstChild);
+  }
+  atomBox.innerHTML = getAtomSVG(el.sym);
+
+  // Glow clicked element in modal
+  const clickedGroup = ELEMENT_GROUPS[el.sym] || "unknown";
+  atomBox.classList.add("glow-highlight");
+  atomBox.style.color = GROUP_COLORS[clickedGroup];
+
+  addLegend();
+}
+
+/* ------------------ MODAL PATCH ------------------ */
+const _openModal = openModal;
+openModal = function (el) {
+  showAtomAnimation(el);
+  _openModal(el);
+};
+
 /* Speech Synthesis UI */
 function speakElement(el) {
   if (!('speechSynthesis' in window)) return;
@@ -626,7 +837,6 @@ function render(elements=ELEMENTS){
 }
 
 /* Modal */
-function openModal(el){ document.getElementById('mSym').textContent=el.sym; document.getElementById('mName').textContent=el.name; document.getElementById('mSub').textContent=`Atomic #${el.n} • ${CATMAP[el.cat]||el.cat}`; document.getElementById('mAbout').textContent=el.about||'—'; document.getElementById('mMass').textContent=el.mass; document.getElementById('mConfig').textContent=el.config||'—'; document.getElementById('mPG').textContent=`${el.period} / ${el.group}`; document.getElementById('mState').textContent=el.state||'—'; document.getElementById('mQuick').textContent=`${el.sym} — ${el.name}`; document.getElementById('mCat').textContent=CATMAP[el.cat]||el.cat; if(!MODAL.open) MODAL.showModal(); }
 document.getElementById('closeModal').addEventListener('click', ()=> MODAL.close());
 
 /* Zoom slider controls */
