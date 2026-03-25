@@ -8,37 +8,58 @@
 <meta name="description" content="A visually stunning, interactive periodic table of elements. Explore, search, quiz, and learn chemistry with modern UI.">
 <style>
 :root{
-  --bg:linear-gradient(135deg, #6ce9ff 0%, #007bff 60%, #ffffff 100%), linear-gradient(120deg, #756a3a 0%, #fbff00 100%);
+  --bg:linear-gradient(135deg, #6ce9ff 0%, #007bff 60%, #ffffff 100%);
   --card:#ffffff;
   --muted:#334155;
   --text:#071028;
-  --cell-size:48px; /* default compact */
+  --cell-size:48px;
   --cell-radius:8px;
   --accent:#2b6bf6;
 }
-*{box-sizing:border-box}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
-.header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;max-width:1200px;margin:10px auto}
-.title{font-weight:800;font-size:18px}
-.controls{display:flex;gap:10px;align-items:center}
-/* neumorphic bulge buttons */
+ 
+/* ── HEADER ── */
+.header{
+  display:flex;flex-direction:column;gap:12px;
+  padding:14px 16px;max-width:1200px;margin:10px auto 18px;
+  background:var(--card);box-shadow:0 2px 16px rgba(2,8,23,0.07);
+  border-radius:14px;
+}
+.header-top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.title{font-weight:800;font-size:clamp(1.1rem,4vw,2rem);letter-spacing:-1px;color:var(--accent)}
+.header-sub{font-size:13px;color:var(--muted)}
+.header-controls{display:flex;flex-direction:column;gap:8px;width:100%}
+.header-search{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.header-buttons{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+ 
+/* ── BUTTONS / INPUTS ── */
 .btn{
   background:linear-gradient(180deg,#ffffff,#e6eefc);
-  border-radius:12px;padding:8px 12px;border:1px solid rgba(43,107,246,0.12);box-shadow: 6px 6px 12px rgba(172,186,224,0.35), -6px -6px 12px rgba(255,255,255,0.9);cursor:pointer;font-weight:700;color:var(--accent)
+  border-radius:12px;padding:8px 12px;border:1px solid rgba(43,107,246,0.12);
+  box-shadow:6px 6px 12px rgba(172,186,224,0.35),-6px -6px 12px rgba(255,255,255,0.9);
+  cursor:pointer;font-weight:700;color:var(--accent);white-space:nowrap;font-size:13px;
 }
 .btn:active{transform:translateY(2px)}
-.pill{padding:8px 10px;border-radius:999px;background:linear-gradient(180deg,#fff,#e8f0ff);border:1px solid rgba(43,107,246,0.08);box-shadow: 4px 4px 10px rgba(172,186,224,0.28);cursor:pointer}
-.input{padding:8px 10px;border-radius:12px;border:1px solid rgba(15,23,42,0.06);box-shadow:inset 0 6px 14px rgba(16,24,40,0.03);min-width:220px}
-.slider{width:160px}
-.wrap{max-width:1200px;margin:12px auto;padding:12px}
-.table-wrap{overflow:hidden}
-.table{display:grid;grid-template-columns:repeat(18,var(--cell-size));grid-auto-rows:var(--cell-size);gap:6px;justify-content:center;background:transparent;padding:16px;border-radius:12px}
-.cell{width:var(--cell-size);height:var(--cell-size);border-radius:var(--cell-radius);display:flex;flex-direction:column;justify-content:space-between;padding:4px;color:white;font-weight:700;cursor:pointer;transition:transform .12s,box-shadow .12s}
-.cell:hover{transform:translateY(-6px);box-shadow:0 14px 30px rgba(11,20,40,0.12)}
-.atomic{font-size:10px;opacity:0.95}
-.symbol{font-size:14px;text-align:center}
-.elname{font-size:9px;text-align:center;opacity:0.95}
-/* category classes */
+.pill{padding:8px 10px;border-radius:999px;background:linear-gradient(180deg,#fff,#e8f0ff);border:1px solid rgba(43,107,246,0.08);box-shadow:4px 4px 10px rgba(172,186,224,0.28);cursor:pointer;white-space:nowrap;font-size:13px}
+.input{padding:8px 10px;border-radius:12px;border:1px solid rgba(15,23,42,0.06);box-shadow:inset 0 6px 14px rgba(16,24,40,0.03);width:100%;font-size:15px}
+.slider{width:120px;flex-shrink:0}
+ 
+/* ── TABLE ── */
+.wrap{width:100%;margin:12px auto;padding:8px 0}
+.table-wrap{overflow-x:auto;overflow-y:visible;-webkit-overflow-scrolling:touch;padding:0 8px 12px;width:100%}
+.table-wrap::-webkit-scrollbar{height:5px}
+.table-wrap::-webkit-scrollbar-track{background:rgba(0,0,0,0.05);border-radius:4px}
+.table-wrap::-webkit-scrollbar-thumb{background:rgba(43,107,246,0.35);border-radius:4px}
+.table{display:grid;grid-template-columns:repeat(18,var(--cell-size));grid-auto-rows:var(--cell-size);gap:4px;justify-content:center;background:transparent;padding:12px;border-radius:12px;width:max-content;margin:0 auto}
+.cell{width:var(--cell-size);height:var(--cell-size);border-radius:var(--cell-radius);display:flex;flex-direction:column;justify-content:space-between;padding:3px;color:white;font-weight:700;cursor:pointer;transition:transform .12s,box-shadow .12s;touch-action:manipulation}
+.cell:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(11,20,40,0.15)}
+.cell:active{transform:scale(0.95)}
+.atomic{font-size:clamp(7px,1vw,10px);opacity:0.95}
+.symbol{font-size:clamp(10px,1.5vw,14px);text-align:center}
+.elname{font-size:clamp(6px,0.9vw,9px);text-align:center;opacity:0.95}
+ 
+/* ── CATEGORY COLORS ── */
 .alkali{background:linear-gradient(180deg,#ff7a5a,#ff5634)}
 .alkaline{background:linear-gradient(180deg,#ffb84a,#ff9900)}
 .transition{background:linear-gradient(180deg,#5fb3ff,#2382ff)}
@@ -52,29 +73,78 @@ body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:var(-
 .act{background:linear-gradient(180deg,#ffb3d6,#ff6da3)}
 .unknown{background:linear-gradient(180deg,#cfcfcf,#9e9e9e)}
 .ghost{opacity:0.65;filter:grayscale(10%)}
-.f-label{grid-column:1/span 3;display:flex;align-items:center;justify-content:flex-end;padding-right:6px;color:var(--muted);font-size:12px}
-/* tooltip */
-.tooltip{position:fixed;z-index:90;pointer-events:none;background:linear-gradient(180deg,#0b1b34,#08223f);color:#e6f3ff;padding:8px 10px;border-radius:10px;font-size:13px;box-shadow:0 20px 60px rgba(2,8,23,0.6);opacity:0;transform:translateY(6px);transition:opacity .12s,transform .12s}
+.f-label{grid-column:1/span 2;display:flex;align-items:center;justify-content:flex-end;padding-right:4px;color:var(--muted);font-size:11px}
+/* Gap row between main table and f-block */
+.table{grid-template-rows:repeat(7,var(--cell-size)) calc(var(--cell-size)*0.4) var(--cell-size) var(--cell-size)}
+ 
+/* ── TOOLTIP (hidden on touch) ── */
+.tooltip{position:fixed;z-index:90;pointer-events:none;background:linear-gradient(180deg,#0b1b34,#08223f);color:#e6f3ff;padding:8px 10px;border-radius:10px;font-size:13px;box-shadow:0 20px 60px rgba(2,8,23,0.6);opacity:0;transform:translateY(6px);transition:opacity .12s,transform .12s;max-width:220px}
 .tooltip.show{opacity:1;transform:translateY(0)}
-/* modal */
-dialog{border:none;border-radius:12px}
+ 
+/* ── MODAL ── */
+dialog{border:none;border-radius:12px;padding:0;max-height:95vh;overflow-y:auto;width:min(900px,96vw)}
 dialog::backdrop{background:rgba(2,8,23,0.55)}
-.modal{background:linear-gradient(180deg,#071021,#0b1730);color:#eaf4ff;padding:18px;border-radius:12px;width:min(900px,96vw);display:grid;grid-template-columns:1fr 300px;gap:12px}
-.big{font-size:56px;font-weight:900}
+.modal{background:linear-gradient(180deg,#071021,#0b1730);color:#eaf4ff;padding:16px;border-radius:12px;display:grid;grid-template-columns:1fr 280px;gap:12px}
+.big{font-size:clamp(36px,8vw,56px);font-weight:900}
 .meta{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}
-.mitem{background:rgba(255,255,255,0.03);padding:10px;border-radius:8px}
+.mitem{background:rgba(255,255,255,0.03);padding:10px;border-radius:8px;font-size:13px;word-break:break-word}
 .rightbox{display:flex;flex-direction:column;gap:10px}
-.legend{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
-.legend .leg{display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:999px;background:linear-gradient(180deg,#fff,#f1f7ff);box-shadow:4px 6px 12px rgba(160,180,220,0.25)}
-.legend .sw{width:20px;height:14px;border-radius:6px}
-/* dark mode */
-body.dark{ --bg:#071022; --card:#071022; --text:#e6f3ff }
-body.dark .btn{ background: linear-gradient(180deg,#0b1226,#07101e); color:#bcd6ff; border:1px solid rgba(255,255,255,0.03)}
-/* responsive scale rules using clamp */
-@media (min-width:1400px){:root{--cell-size:clamp(44px,2.5vw,60px)}}
-@media (max-width:1399px){:root{--cell-size:clamp(36px,3.5vw,52px)}}
-@media (max-width:800px){:root{--cell-size:clamp(28px,4.6vw,44px)}}
+ 
+/* ── LEGEND ── */
+.legend{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px;padding:0 16px 16px}
+.legend .leg{display:flex;gap:6px;align-items:center;padding:5px 8px;border-radius:999px;background:linear-gradient(180deg,#fff,#f1f7ff);box-shadow:4px 6px 12px rgba(160,180,220,0.25);font-size:12px}
+.legend .sw{width:16px;height:12px;border-radius:4px;flex-shrink:0}
+ 
+/* ── FLOATING ACTION BAR (bottom) ── */
+.fab-bar{
+  position:fixed;bottom:16px;right:16px;z-index:99;
+  display:flex;flex-direction:row;gap:8px;align-items:center;
+  flex-wrap:wrap;justify-content:flex-end;max-width:calc(100vw - 32px);
+}
+ 
+/* ── QUIZ / LOGIN / SHORTCUT PANELS ── */
+.panel{
+  max-width:500px;width:calc(100% - 32px);margin:16px auto 0;
+  background:var(--card);border-radius:14px;
+  box-shadow:0 8px 32px rgba(2,8,23,0.10);padding:20px;display:none;
+}
+.login-panel{
+  max-width:400px;width:calc(100% - 32px);
+  background:var(--card);border-radius:14px;
+  box-shadow:0 8px 32px rgba(2,8,23,0.10);padding:20px;
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:100;display:none;
+}
+.shortcut-panel{
+  max-width:400px;width:calc(100% - 32px);margin:16px auto 0;
+  background:var(--card);border-radius:14px;
+  box-shadow:0 8px 32px rgba(2,8,23,0.10);padding:16px;display:none;
+}
+ 
+/* ── DARK MODE ── */
+body.dark{--bg:#071022;--card:#071022;--text:#e6f3ff}
+body.dark .btn{background:linear-gradient(180deg,#0b1226,#07101e);color:#bcd6ff;border:1px solid rgba(255,255,255,0.03)}
+body.dark .input{background:#0a1628;color:#e6f3ff;border-color:rgba(255,255,255,0.08)}
+body.dark .legend .leg{background:linear-gradient(180deg,#0e1f3a,#081428);color:#cde}
+ 
+/* ── RESPONSIVE CELL SIZES ── */
+@media(min-width:1400px){:root{--cell-size:clamp(44px,2.5vw,60px)}}
+@media(max-width:1399px){:root{--cell-size:clamp(36px,3.2vw,52px)}}
+@media(max-width:900px){:root{--cell-size:32px}}
+@media(max-width:600px){:root{--cell-size:26px}
+  .modal{grid-template-columns:1fr}
+  .rightbox{flex-direction:row;flex-wrap:wrap}
+  .rightbox .mitem{flex:1;min-width:120px}
+  .meta{grid-template-columns:repeat(2,1fr)}
+  .fab-bar{gap:6px}
+  .fab-bar .btn,.fab-bar .pill{font-size:11px;padding:7px 9px}
+}
+@media(max-width:400px){:root{--cell-size:22px}
+  .atomic{display:none}
+  .elname{display:none}
+  .symbol{font-size:9px}
+}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
   <!-- PWA manifest and service worker registration -->
@@ -88,29 +158,29 @@ body.dark .btn{ background: linear-gradient(180deg,#0b1226,#07101e); color:#bcd6
     });
   }
   </script>
-<header class="header" style="background:var(--card);box-shadow:0 2px 16px rgba(2,8,23,0.07);border-radius:14px;margin-bottom:18px;">
-  <div style="display:flex;flex-direction:column;gap:2px">
-    <div class="title" style="font-size:2rem;letter-spacing:-1px;color:var(--accent);margin-bottom:2px">Interactive Periodic Table</div>
-    <div style="font-size:13px;color:var(--muted)">Hover for quick info — click for full details</div>
+<header class="header">
+  <div class="header-top">
+    <div>
+      <div class="title">Interactive Periodic Table</div>
+      <div class="header-sub">Tap an element for full details</div>
+    </div>
+    <button id="themeToggle" class="btn" title="Toggle dark/light mode">🌗</button>
   </div>
-  <div class="controls" style="gap:18px"></div>
-    <div style="display:flex;flex-direction:column;gap:8px"></div>
-      <div style="display:flex;gap:8px;align-items:center"></div>
-        <input id="search" class="input" placeholder="Search name, symbol or #" aria-label="search" style="font-size:15px">
-        <div id="autocomplete" style="position:relative"></div>
-      </div>
-      <div style="display:flex;gap:10px;align-items:center">
-        <button id="compactBtn" class="btn" title="Compact / Study">Compact</button>
-        <input id="zoomSlider" class="slider" type="range" min="28" max="78" value="48" title="Zoom slider">
-        <button id="resetBtn" class="pill">Reset View</button>
-        <button id="themeToggle" class="btn" title="Toggle dark/light mode">🌗</button>
-      </div>
+  <div class="header-controls">
+    <div class="header-search">
+      <input id="search" class="input" placeholder="Search name, symbol or #" aria-label="search">
+      <div id="autocomplete" style="position:relative"></div>
+    </div>
+    <div class="header-buttons">
+      <button id="compactBtn" class="btn" title="Compact / Study">Compact</button>
+      <input id="zoomSlider" class="slider" type="range" min="28" max="78" value="48" title="Zoom slider">
+      <button id="resetBtn" class="pill">Reset</button>
     </div>
   </div>
 </header>
-
+ 
 <!-- Quiz UI -->
-<section id="quizBox" style="max-width:500px;margin:32px auto 0;background:var(--card);border-radius:14px;box-shadow:0 8px 32px rgba(2,8,23,0.10);padding:24px;display:none">
+<section id="quizBox" class="panel">
   <div style="font-weight:700;font-size:1.3rem;margin-bottom:10px;color:var(--accent)">Periodic Table Quiz</div>
   <div style="margin-bottom:12px">
     <label for="quizMode" style="font-size:14px;font-weight:600">Select Mode:</label>
@@ -125,8 +195,12 @@ body.dark .btn{ background: linear-gradient(180deg,#0b1226,#07101e); color:#bcd6
   </div>
   <div id="quizArea" style="margin-top:16px"></div>
 </section>
-<button id="quizToggle" class="btn" style="position:fixed;bottom:24px;right:24px;z-index:99">🧪 Quiz</button>
-
+<div class="fab-bar">
+  <button id="helpBtn" class="btn">❔ Help</button>
+  <button id="loginToggle" class="btn">🔐 Login</button>
+  <button id="quizToggle" class="btn">🧪 Quiz</button>
+</div>
+ 
 <script>
 const quizBox = document.getElementById('quizBox');
 const quizToggle = document.getElementById('quizToggle');
@@ -134,19 +208,19 @@ const quizMode = document.getElementById('quizMode');
 const startQuiz = document.getElementById('startQuiz');
 const stopQuiz = document.getElementById('stopQuiz');
 const quizArea = document.getElementById('quizArea');
-
+ 
 let quizElements = [];
 let quizIndex = 0;
 let quizScore = 0;
 let quizActive = false;
 let quizTotal = 0;
 let quizNegative = 0;
-
+ 
 // Show/hide quiz box
 quizToggle.addEventListener('click', ()=>{
   quizBox.style.display = quizBox.style.display==='none' ? 'block' : 'none';
 });
-
+ 
 // Start quiz
 startQuiz.addEventListener('click', ()=>{
   let mode = quizMode.value;
@@ -163,7 +237,7 @@ startQuiz.addEventListener('click', ()=>{
   stopQuiz.style.display = 'inline-block';
   showQuizQuestion();
 });
-
+ 
 // Stop quiz mid-way
 stopQuiz.addEventListener('click', ()=>{
   quizActive = false;
@@ -174,7 +248,7 @@ stopQuiz.addEventListener('click', ()=>{
   stopQuiz.style.display = 'none';
   document.getElementById('quizRestart').onclick = ()=>{ startQuiz.click(); };
 });
-
+ 
 // Show question
 function showQuizQuestion(){
   if(!quizActive || quizIndex >= quizElements.length){
@@ -223,9 +297,9 @@ function showQuizQuestion(){
   });
 }
 </script>
-
+ 
 <!-- Login/Sign Up Interface (hidden by default) -->
-<section id="loginBox" style="max-width:400px;margin:32px auto;background:var(--card);border-radius:14px;box-shadow:0 8px 32px rgba(2,8,23,0.10);padding:24px;display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:100;">
+<section id="loginBox" class="login-panel">
   <div style="font-weight:700;font-size:1.2rem;margin-bottom:10px;color:var(--accent)">Login / Sign Up</div>
   <form id="loginForm" autocomplete="off">
     <div style="margin-bottom:12px">
@@ -241,7 +315,7 @@ function showQuizQuestion(){
     <div id="loginFeedback" style="margin-top:10px;font-size:13px;color:#f87171"></div>
   </form>
 </section>
-<button id="loginToggle" class="btn" style="position:fixed;bottom:24px;right:156px;z-index:99">🔐 Login/Sign Up</button>
+ 
 <script>
 // User storage using localStorage
 const loginForm = document.getElementById('loginForm');
@@ -249,7 +323,7 @@ const loginBox = document.getElementById('loginBox');
 const loginFeedback = document.getElementById('loginFeedback');
 const signupBtn = document.getElementById('signupBtn');
 const loginToggle = document.getElementById('loginToggle');
-
+ 
 function getUsers() {
   return JSON.parse(localStorage.getItem('users') || '{}');
 }
@@ -321,10 +395,9 @@ signupBtn.addEventListener('click', function() {
   }
 });
 </script>
-
+ 
 <!-- Shortcut UI (hidden by default) -->
-<button id="helpBtn" class="btn" style="position:fixed;bottom:24px;right:90px;z-index:99">❔ Help</button>
-<section id="shortcutBox" style="max-width:400px;margin:24px auto 0;background:var(--card);border-radius:14px;box-shadow:0 8px 32px rgba(2,8,23,0.10);padding:18px;display:none">
+<section id="shortcutBox" class="shortcut-panel">
   <div style="font-weight:700;font-size:1.1rem;margin-bottom:8px;color:var(--accent)">Keyboard Shortcuts</div>
   <ul style="font-size:13px;line-height:1.7;margin:0;padding-left:18px">
     <li><strong>/</strong> — Focus search box</li>
@@ -342,7 +415,7 @@ const shortcutBox = document.getElementById('shortcutBox');
 helpBtn.addEventListener('click', () => {
   shortcutBox.style.display = shortcutBox.style.display === 'none' ? 'block' : 'none';
 });
-
+ 
 // Shortcut logic
 document.addEventListener('keydown', function(e) {
   // Focus search
@@ -378,16 +451,16 @@ document.addEventListener('keydown', function(e) {
   }
 });
 </script>
-
-<div class="wrap">
+ 
+<div class="wrap" style="padding-bottom:80px">
   <div class="table-wrap">
     <div id="table" class="table"></div>
   </div>
   <div class="legend" id="legend"></div>
 </div>
-
+ 
 <div id="tooltip" class="tooltip" aria-hidden="true"></div>
-
+ 
 <dialog id="modal">
   <div class="modal">
     <div>
@@ -413,7 +486,7 @@ document.addEventListener('keydown', function(e) {
     </div>
   </div>
 </dialog>
-
+ 
 <script>
 /* ELEMENT DATA (118 elements) */
 const ELEMENTS = [
@@ -426,7 +499,7 @@ const ELEMENTS = [
 {"n":7,"sym":"N","name":"Nitrogen","cat":"diatomic","mass":"14.007","state":"gas","group":15,"period":2,"config":"[He] 2s² 2p³","about":"Major component of air."},
 {"n":8,"sym":"O","name":"Oxygen","cat":"diatomic","mass":"15.999","state":"gas","group":16,"period":2,"config":"[He] 2s² 2p⁴","about":"Essential for respiration."},
 {"n":9,"sym":"F","name":"Fluorine","cat":"halogen","mass":"18.998","state":"gas","group":17,"period":2,"config":"[He] 2s² 2p⁵","about":"Very reactive halogen."},
-{"n":10,"sym":"Ne","name":"Neon","cat":"noble","mass":"20.180","state":"gas","group":18,"period":2,"config":"[He] 2s² 2p⁶","about":"Neon signs; inert gas."},
+{"n":10,"sym":"Ne","name":"Neon","cat":"noble","mass":"20.180","state":"gas","group":18,"period":2,"config":"[Ne]","about":"Neon signs; inert gas."},
 {"n":11,"sym":"Na","name":"Sodium","cat":"alkali","mass":"22.990","state":"solid","group":1,"period":3,"config":"[Ne] 3s¹","about":"Common in salts; reactive metal."},
 {"n":12,"sym":"Mg","name":"Magnesium","cat":"alkaline","mass":"24.305","state":"solid","group":2,"period":3,"config":"[Ne] 3s²","about":"Light structural metal; chlorophyll."},
 {"n":13,"sym":"Al","name":"Aluminium","cat":"post","mass":"26.982","state":"solid","group":13,"period":3,"config":"[Ne] 3s² 3p¹","about":"Abundant, corrosion-resistant metal."},
@@ -434,7 +507,7 @@ const ELEMENTS = [
 {"n":15,"sym":"P","name":"Phosphorus","cat":"poly","mass":"30.974","state":"solid","group":15,"period":3,"config":"[Ne] 3s² 3p³","about":"Vital nutrient; fertilizers."},
 {"n":16,"sym":"S","name":"Sulfur","cat":"poly","mass":"32.06","state":"solid","group":16,"period":3,"config":"[Ne] 3s² 3p⁴","about":"Industrial sulfuric acid."},
 {"n":17,"sym":"Cl","name":"Chlorine","cat":"halogen","mass":"35.45","state":"gas","group":17,"period":3,"config":"[Ne] 3s² 3p⁵","about":"Disinfectant; forms salts."},
-{"n":18,"sym":"Ar","name":"Argon","cat":"noble","mass":"39.948","state":"gas","group":18,"period":3,"config":"[Ne] 3s² 3p⁶","about":"Shielding gas in welding."},
+{"n":18,"sym":"Ar","name":"Argon","cat":"noble","mass":"39.948","state":"gas","group":18,"period":3,"config":"[Ar]","about":"Shielding gas in welding."},
 {"n":19,"sym":"K","name":"Potassium","cat":"alkali","mass":"39.098","state":"solid","group":1,"period":4,"config":"[Ar] 4s¹","about":"Essential nutrient."},
 {"n":20,"sym":"Ca","name":"Calcium","cat":"alkaline","mass":"40.078","state":"solid","group":2,"period":4,"config":"[Ar] 4s²","about":"Bones, shells; cement."},
 {"n":21,"sym":"Sc","name":"Scandium","cat":"transition","mass":"44.956","state":"solid","group":3,"period":4,"config":"[Ar] 3d¹ 4s²","about":"Light transition metal."},
@@ -452,7 +525,7 @@ const ELEMENTS = [
 {"n":33,"sym":"As","name":"Arsenic","cat":"metalloid","mass":"74.922","state":"solid","group":15,"period":4,"config":"[Ar] 3d¹⁰ 4s² 4p³","about":"Toxic compounds."},
 {"n":34,"sym":"Se","name":"Selenium","cat":"poly","mass":"78.971","state":"solid","group":16,"period":4,"config":"[Ar] 3d¹⁰ 4s² 4p⁴","about":"Electronics; glass."},
 {"n":35,"sym":"Br","name":"Bromine","cat":"halogen","mass":"79.904","state":"liquid","group":17,"period":4,"config":"[Ar] 3d¹⁰ 4s² 4p⁵","about":"Liquid halogen."},
-{"n":36,"sym":"Kr","name":"Krypton","cat":"noble","mass":"83.798","state":"gas","group":18,"period":4,"config":"[Ar] 3d¹⁰ 4s² 4p⁶","about":"Lighting; inert gas."},
+{"n":36,"sym":"Kr","name":"Krypton","cat":"noble","mass":"83.798","state":"gas","group":18,"period":4,"config":"[Kr]","about":"Lighting; inert gas."},
 {"n":37,"sym":"Rb","name":"Rubidium","cat":"alkali","mass":"85.468","state":"solid","group":1,"period":5,"config":"[Kr] 5s¹","about":"Highly reactive alkali metal."},
 {"n":38,"sym":"Sr","name":"Strontium","cat":"alkaline","mass":"87.62","state":"solid","group":2,"period":5,"config":"[Kr] 5s²","about":"Fireworks; magnets."},
 {"n":39,"sym":"Y","name":"Yttrium","cat":"transition","mass":"88.906","state":"solid","group":3,"period":5,"config":"[Kr] 4d¹ 5s²","about":"LED phosphors."},
@@ -470,7 +543,7 @@ const ELEMENTS = [
 {"n":51,"sym":"Sb","name":"Antimony","cat":"metalloid","mass":"121.76","state":"solid","group":15,"period":5,"config":"[Kr] 4d¹⁰ 5s² 5p³","about":"Flame retardants."},
 {"n":52,"sym":"Te","name":"Tellurium","cat":"metalloid","mass":"127.60","state":"solid","group":16,"period":5,"config":"[Kr] 4d¹⁰ 5s² 5p⁴","about":"Thermoelectrics."},
 {"n":53,"sym":"I","name":"Iodine","cat":"halogen","mass":"126.90","state":"solid","group":17,"period":5,"config":"[Kr] 4d¹⁰ 5s² 5p⁵","about":"Essential micronutrient."},
-{"n":54,"sym":"Xe","name":"Xenon","cat":"noble","mass":"131.29","state":"gas","group":18,"period":5,"config":"[Kr] 4d¹⁰ 5s² 5p⁶","about":"Lighting; anesthesia."},
+{"n":54,"sym":"Xe","name":"Xenon","cat":"noble","mass":"131.29","state":"gas","group":18,"period":5,"config":"[Xe]","about":"Lighting; anesthesia."},
 {"n":55,"sym":"Cs","name":"Caesium","cat":"alkali","mass":"132.91","state":"solid","group":1,"period":6,"config":"[Xe] 6s¹","about":"Atomic clocks."},
 {"n":56,"sym":"Ba","name":"Barium","cat":"alkaline","mass":"137.33","state":"solid","group":2,"period":6,"config":"[Xe] 6s²","about":"Contrast agents; fireworks."},
 {"n":57,"sym":"La","name":"Lanthanum","cat":"lanth","mass":"138.91","state":"solid","group":3,"period":6,"config":"[Xe] 5d¹ 6s²","about":"Start of lanthanides."},
@@ -502,7 +575,7 @@ const ELEMENTS = [
 {"n":83,"sym":"Bi","name":"Bismuth","cat":"post","mass":"208.98","state":"solid","group":15,"period":6,"config":"[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p³","about":"Low-toxicity lead alternative."},
 {"n":84,"sym":"Po","name":"Polonium","cat":"post","mass":"209","state":"solid","group":16,"period":6,"config":"[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁴","about":"Radioactive."},
 {"n":85,"sym":"At","name":"Astatine","cat":"halogen","mass":"210","state":"solid","group":17,"period":6,"config":"[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁵","about":"Rare, radioactive halogen."},
-{"n":86,"sym":"Rn","name":"Radon","cat":"noble","mass":"222","state":"gas","group":18,"period":6,"config":"[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁶","about":"Radioactive noble gas."},
+{"n":86,"sym":"Rn","name":"Radon","cat":"noble","mass":"222","state":"gas","group":18,"period":6,"config":"[Rn]","about":"Radioactive noble gas."},
 {"n":87,"sym":"Fr","name":"Francium","cat":"alkali","mass":"223","state":"solid","group":1,"period":7,"config":"[Rn] 7s¹","about":"Extremely rare, radioactive."},
 {"n":88,"sym":"Ra","name":"Radium","cat":"alkaline","mass":"226","state":"solid","group":2,"period":7,"config":"[Rn] 7s²","about":"Radioactive."},
 {"n":89,"sym":"Ac","name":"Actinium","cat":"act","mass":"227","state":"solid","group":3,"period":7,"config":"[Rn] 6d¹ 7s²","about":"Start of actinides."},
@@ -534,7 +607,7 @@ const ELEMENTS = [
 {"n":115,"sym":"Mc","name":"Moscovium","cat":"unknown","mass":"289","state":"unknown","group":15,"period":7,"config":"[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p³","about":"Synthetic."},
 {"n":116,"sym":"Lv","name":"Livermorium","cat":"unknown","mass":"293","state":"unknown","group":16,"period":7,"config":"[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁴","about":"Synthetic."},
 {"n":117,"sym":"Ts","name":"Tennessine","cat":"unknown","mass":"294","state":"unknown","group":17,"period":7,"config":"[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁵","about":"Synthetic."},
-{"n":118,"sym":"Og","name":"Oganesson","cat":"unknown","mass":"294","state":"unknown","group":18,"period":7,"config":"[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁶","about":"Heaviest known element."}
+{"n":118,"sym":"Og","name":"Oganesson","cat":"unknown","mass":"294","state":"unknown","group":18,"period":7,"config":"[Og]","about":"Heaviest known element."}
 ];
 /* ------------------ GROUP COLORS ------------------ */
 const GROUP_COLORS = {
@@ -550,7 +623,7 @@ const GROUP_COLORS = {
   "actinide": "#ef4444",              // deep red
   "unknown": "#9e9e9e"                // gray fallback
 };
-
+ 
 /* ------------------ ELEMENT GROUPS ------------------ */
 const ELEMENT_GROUPS = {
   H: "nonmetal", He: "noble gas",
@@ -569,7 +642,7 @@ const ELEMENT_GROUPS = {
   Rf: "transition metal", Db: "transition metal", Sg: "transition metal", Bh: "transition metal", Hs: "transition metal", Mt: "transition metal", Ds: "transition metal", Rg: "transition metal", Cn: "transition metal",
   Nh: "post-transition metal", Fl: "post-transition metal", Mc: "post-transition metal", Lv: "post-transition metal", Ts: "halogen", Og: "noble gas"
 };
-
+ 
 /* ------------------ ATOMIC NUMBERS ------------------ */
 const ATOMIC_NUMBERS = {
   H: 1, He: 2,
@@ -588,7 +661,7 @@ const ATOMIC_NUMBERS = {
   Rf: 104, Db: 105, Sg: 106, Bh: 107, Hs: 108, Mt: 109, Ds: 110, Rg: 111, Cn: 112,
   Nh: 113, Fl: 114, Mc: 115, Lv: 116, Ts: 117, Og: 118
 };
-
+ 
 /* ------------------ GLOW EFFECT CSS ------------------ */
 (function addGlowCSS() {
   if (!document.getElementById("glow-style")) {
@@ -608,16 +681,15 @@ const ATOMIC_NUMBERS = {
     document.head.appendChild(style);
   }
 })();
-
-/* ------------------ ATOM GENERATOR ------------------ */
-function generateAtomSVG(symbol, atomicNumber) {
-  const size = 120;
-  const center = size / 2;
-  const nucleusRadius = 12;
-
-  const group = ELEMENT_GROUPS[symbol] || "unknown";
-  const nucleusColor = GROUP_COLORS[group] || GROUP_COLORS["unknown"];
-
+ 
+/* ------------------ ATOM 2D / 3D SYSTEM ------------------ */
+let atom3DMode = true;
+let atomAnimId = null;
+let atomRenderer = null;
+let atomScene = null;
+let currentAtomElement = null;
+ 
+function getShells(atomicNumber) {
   const shellConfig = [2, 8, 18, 32, 32, 18, 8];
   let electrons = atomicNumber;
   let shells = [];
@@ -626,41 +698,192 @@ function generateAtomSVG(symbol, atomicNumber) {
     shells.push(take);
     electrons -= take;
   }
-
-  let svg = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">`;
-  svg += `<circle cx="${center}" cy="${center}" r="${nucleusRadius}" fill="${nucleusColor}"/>`;
-
-  shells.forEach((count, shellIndex) => {
-    let radius = 30 + shellIndex * 15;
-    svg += `<circle cx="${center}" cy="${center}" r="${radius}" fill="none" stroke="rgba(0,0,0,0.15)" />`;
+  return shells;
+}
+ 
+function destroyAtom3D() {
+  if (atomAnimId) { cancelAnimationFrame(atomAnimId); atomAnimId = null; }
+  if (atomRenderer) {
+    atomRenderer.dispose();
+    if (atomRenderer.domElement && atomRenderer.domElement.parentNode)
+      atomRenderer.domElement.parentNode.removeChild(atomRenderer.domElement);
+    atomRenderer = null;
+  }
+  atomScene = null;
+}
+ 
+/* --- 2D SVG atom --- */
+function generateAtomSVG(symbol, atomicNumber) {
+  const size = 200, center = size / 2;
+  const group = ELEMENT_GROUPS[symbol] || "unknown";
+  const nucleusColor = GROUP_COLORS[group] || GROUP_COLORS["unknown"];
+  const shells = getShells(atomicNumber);
+ 
+  let svg = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <defs>
+      <radialGradient id="nucGrad_${symbol}" cx="40%" cy="35%">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="${nucleusColor}"/>
+      </radialGradient>
+      <filter id="glowF_${symbol}">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>`;
+ 
+  shells.forEach((count, si) => {
+    const rx = 26 + si * 19, ry = Math.max(8, rx * 0.32);
+    svg += `<ellipse cx="${center}" cy="${center}" rx="${rx}" ry="${ry}" fill="none" stroke="rgba(100,180,255,0.22)" stroke-width="1.2"/>`;
     for (let i = 0; i < count; i++) {
-      let id = `orbit${shellIndex}${symbol}`;
+      const pathId = `p_${symbol}_${si}_${i}`;
+      const offset = i / count;
+      const dur = 2.2 + si * 0.7;
       svg += `
-        <circle r="4" fill="#fff">
-          <animateMotion dur="${2 + shellIndex}s" repeatCount="indefinite" rotate="auto">
-            <mpath xlink:href="#${id}" />
+        <circle r="3.5" fill="#ffffff" opacity="0.92" filter="url(#glowF_${symbol})">
+          <animateMotion dur="${dur}s" begin="${(-offset * dur).toFixed(2)}s" repeatCount="indefinite">
+            <mpath xlink:href="#${pathId}"/>
           </animateMotion>
         </circle>
-        <path id="${id}" 
-          d="M ${center - radius},${center} 
-             a ${radius},${radius} 0 1,0 ${radius * 2},0 
-             a ${radius},${radius} 0 1,0 -${radius * 2},0" fill="none"/>
-      `;
+        <path id="${pathId}" d="M ${center-rx},${center} a ${rx},${ry} 0 1,0 ${rx*2},0 a ${rx},${ry} 0 1,0 -${rx*2},0" fill="none"/>`;
     }
   });
-
+ 
+  svg += `<circle cx="${center}" cy="${center}" r="13" fill="url(#nucGrad_${symbol})" filter="url(#glowF_${symbol})"/>`;
   svg += `</svg>`;
   return svg;
 }
-
-/* ------------------ ATOM FETCHER ------------------ */
+ 
 function getAtomSVG(sym) {
-  if (ATOMIC_NUMBERS[sym]) {
-    return generateAtomSVG(sym, ATOMIC_NUMBERS[sym]);
-  }
-  return `<svg width="120" height="120"><circle cx="60" cy="60" r="40" fill="#cfcfcf" opacity="0.15"/><circle cx="60" cy="60" r="12" fill="#9e9e9e"/></svg>`;
+  if (ATOMIC_NUMBERS[sym]) return generateAtomSVG(sym, ATOMIC_NUMBERS[sym]);
+  return `<svg width="200" height="200"><circle cx="100" cy="100" r="12" fill="#9e9e9e"/></svg>`;
 }
-
+ 
+/* --- 3D Three.js atom --- */
+function buildAtom3D(el, container) {
+  destroyAtom3D();
+  if (typeof THREE === 'undefined') { container.innerHTML = getAtomSVG(el.sym); return; }
+ 
+  const W = 200, H = 200;
+  const group = ELEMENT_GROUPS[el.sym] || "unknown";
+  const colorHex = GROUP_COLORS[group] || "#9e9e9e";
+  const nucleusColor = new THREE.Color(colorHex);
+ 
+  atomScene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, W / H, 0.1, 1000);
+  camera.position.set(0, 0, 130);
+ 
+  atomRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  atomRenderer.setSize(W, H);
+  atomRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  atomRenderer.setClearColor(0x000000, 0);
+  atomRenderer.domElement.style.borderRadius = '12px';
+  container.appendChild(atomRenderer.domElement);
+ 
+  // Lights
+  atomScene.add(new THREE.AmbientLight(0xffffff, 0.35));
+  const pLight = new THREE.PointLight(nucleusColor, 2.5, 400);
+  pLight.position.set(0, 0, 80);
+  atomScene.add(pLight);
+  const pLight2 = new THREE.PointLight(0x88ccff, 1.2, 400);
+  pLight2.position.set(-60, 40, 60);
+  atomScene.add(pLight2);
+ 
+  // Nucleus
+  const atomGroup = new THREE.Group();
+  atomScene.add(atomGroup);
+  const nucGeo = new THREE.SphereGeometry(11, 48, 48);
+  const nucMat = new THREE.MeshPhongMaterial({ color: nucleusColor, emissive: nucleusColor, emissiveIntensity: 0.45, shininess: 120 });
+  atomGroup.add(new THREE.Mesh(nucGeo, nucMat));
+ 
+  const shells = getShells(el.n);
+  const inclinations = [
+    [0, 0, 0],
+    [Math.PI/3, Math.PI/4, 0],
+    [Math.PI/6, -Math.PI/3, Math.PI/5],
+    [Math.PI/2, Math.PI/6, -Math.PI/4],
+    [Math.PI/4, Math.PI/2, Math.PI/3],
+    [-Math.PI/3, Math.PI/3, Math.PI/6],
+    [Math.PI/5, -Math.PI/5, Math.PI/2],
+  ];
+ 
+  const electronData = [];
+  shells.forEach((count, si) => {
+    const r = 20 + si * 15;
+    const [rx, ry, rz] = inclinations[si] || [0,0,0];
+ 
+    // Orbital ring
+    const torusGeo = new THREE.TorusGeometry(r, 0.45, 8, 80);
+    const torusMat = new THREE.MeshBasicMaterial({ color: 0x3399ee, transparent: true, opacity: 0.28 });
+    const torus = new THREE.Mesh(torusGeo, torusMat);
+    torus.rotation.set(rx, ry, rz);
+    atomGroup.add(torus);
+ 
+    // Electrons (cap display per shell for performance)
+    const displayCount = Math.min(count, 10);
+    for (let i = 0; i < displayCount; i++) {
+      const eGeo = new THREE.SphereGeometry(2.4, 16, 16);
+      const eMat = new THREE.MeshPhongMaterial({ color: 0xffffff, emissive: 0xaaddff, emissiveIntensity: 0.9, shininess: 200 });
+      const eMesh = new THREE.Mesh(eGeo, eMat);
+      atomGroup.add(eMesh);
+      electronData.push({ mesh: eMesh, r, offset: (i / displayCount) * Math.PI * 2, si, rx, ry, rz });
+    }
+  });
+ 
+  // Mouse drag
+  let dragging = false, px = 0, py = 0;
+  const cv = atomRenderer.domElement;
+  cv.style.cursor = 'grab';
+  cv.addEventListener('mousedown', e => { dragging = true; px = e.clientX; py = e.clientY; cv.style.cursor = 'grabbing'; });
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    atomGroup.rotation.y += (e.clientX - px) * 0.012;
+    atomGroup.rotation.x += (e.clientY - py) * 0.012;
+    px = e.clientX; py = e.clientY;
+  });
+  window.addEventListener('mouseup', () => { dragging = false; cv.style.cursor = 'grab'; });
+ 
+  // Touch drag
+  cv.addEventListener('touchstart', e => { dragging = true; px = e.touches[0].clientX; py = e.touches[0].clientY; }, { passive: true });
+  cv.addEventListener('touchmove', e => {
+    if (!dragging) return;
+    atomGroup.rotation.y += (e.touches[0].clientX - px) * 0.012;
+    atomGroup.rotation.x += (e.touches[0].clientY - py) * 0.012;
+    px = e.touches[0].clientX; py = e.touches[0].clientY;
+  }, { passive: true });
+  cv.addEventListener('touchend', () => { dragging = false; });
+ 
+  let t = 0;
+  function animate() {
+    atomAnimId = requestAnimationFrame(animate);
+    t += 0.016;
+    if (!dragging) atomGroup.rotation.y += 0.006;
+ 
+    electronData.forEach(ed => {
+      const speed = 0.55 / (ed.si + 1);
+      const angle = ed.offset + t * speed;
+      // Compute position on tilted orbit
+      const lx = Math.cos(angle) * ed.r;
+      const ly = Math.sin(angle) * ed.r;
+      // Rotate around Z
+      let x = lx * Math.cos(ed.rz) - ly * Math.sin(ed.rz);
+      let y = lx * Math.sin(ed.rz) + ly * Math.cos(ed.rz);
+      let z = 0;
+      // Rotate around Y
+      let x2 = x * Math.cos(ed.ry) + z * Math.sin(ed.ry);
+      let z2 = -x * Math.sin(ed.ry) + z * Math.cos(ed.ry);
+      x = x2; z = z2;
+      // Rotate around X
+      let y2 = y * Math.cos(ed.rx) - z * Math.sin(ed.rx);
+      z2 = y * Math.sin(ed.rx) + z * Math.cos(ed.rx);
+      y = y2; z = z2;
+      ed.mesh.position.set(x, y, z);
+    });
+ 
+    atomRenderer.render(atomScene, camera);
+  }
+  animate();
+}
+ 
 /* ------------------ LEGEND ------------------ */
 function addLegend() {
   let legendWrapper = document.getElementById("legendWrapper");
@@ -668,29 +891,29 @@ function addLegend() {
     legendWrapper = document.createElement("div");
     legendWrapper.id = "legendWrapper";
     legendWrapper.style = "margin-top:12px;text-align:center;";
-
+ 
     const toggleBtn = document.createElement("button");
     toggleBtn.textContent = "Show Legend";
     toggleBtn.style = "padding:4px 10px;margin-bottom:6px;font-size:12px;cursor:pointer;border:1px solid #ccc;border-radius:6px;background:#f9f9f9;";
     legendWrapper.appendChild(toggleBtn);
-
+ 
     const legendBox = document.createElement("div");
     legendBox.id = "legendBox";
     legendBox.style = "display:none;flex-wrap:wrap;gap:10px;margin-top:6px;font-size:12px;justify-content:center;";
     legendWrapper.appendChild(legendBox);
-
+ 
     document.querySelector(".modal").appendChild(legendWrapper);
-
+ 
     Object.entries(GROUP_COLORS).forEach(([group, color]) => {
       const item = document.createElement("div");
       item.style = "display:flex;align-items:center;gap:4px;cursor:pointer;";
       item.innerHTML = `<span style="width:14px;height:14px;border-radius:50%;background:${color};display:inline-block;"></span> ${group}`;
       legendBox.appendChild(item);
-
+ 
       item.addEventListener("mouseenter", () => highlightGroup(group, true, color));
       item.addEventListener("mouseleave", () => highlightGroup(group, false, color));
     });
-
+ 
     toggleBtn.addEventListener("click", () => {
       if (legendBox.style.display === "none") {
         legendBox.style.display = "flex";
@@ -702,7 +925,7 @@ function addLegend() {
     });
   }
 }
-
+ 
 /* ------------------ HIGHLIGHTING ------------------ */
 function highlightGroup(group, on, color) {
   Object.entries(ELEMENT_GROUPS).forEach(([symbol, g]) => {
@@ -720,33 +943,64 @@ function highlightGroup(group, on, color) {
     }
   });
 }
-
+ 
 /* ------------------ ATOM DISPLAY ------------------ */
+function renderAtomView(el) {
+  const display = document.getElementById('atomDisplay');
+  if (!display) return;
+  display.innerHTML = '';
+  destroyAtom3D();
+  if (atom3DMode) {
+    buildAtom3D(el, display);
+  } else {
+    display.innerHTML = getAtomSVG(el.sym);
+  }
+  // Update toggle button label
+  const toggleBtn = document.getElementById('atomToggleBtn');
+  if (toggleBtn) toggleBtn.textContent = atom3DMode ? '⬡ Switch to 2D' : '⬡ Switch to 3D';
+}
+ 
 function showAtomAnimation(el) {
+  currentAtomElement = el;
   let atomBox = document.getElementById("atomBox");
   if (!atomBox) {
     atomBox = document.createElement("div");
     atomBox.id = "atomBox";
-    atomBox.style = "display:flex;justify-content:center;align-items:center;margin-bottom:12px;";
+    atomBox.style = "display:flex;flex-direction:column;align-items:center;margin-bottom:12px;gap:8px;";
     document.querySelector(".modal").insertBefore(atomBox, document.querySelector(".modal").firstChild);
+ 
+    const atomDisplay = document.createElement("div");
+    atomDisplay.id = "atomDisplay";
+    atomDisplay.style = "display:flex;justify-content:center;align-items:center;width:200px;height:200px;";
+    atomBox.appendChild(atomDisplay);
+ 
+    const toggleBtn = document.createElement("button");
+    toggleBtn.id = "atomToggleBtn";
+    toggleBtn.className = "btn";
+    toggleBtn.style = "font-size:12px;padding:5px 14px;";
+    toggleBtn.textContent = atom3DMode ? '⬡ Switch to 2D' : '⬡ Switch to 3D';
+    toggleBtn.addEventListener('click', () => {
+      atom3DMode = !atom3DMode;
+      if (currentAtomElement) renderAtomView(currentAtomElement);
+    });
+    atomBox.appendChild(toggleBtn);
   }
-  atomBox.innerHTML = getAtomSVG(el.sym);
-
-  // Glow clicked element in modal
+ 
   const clickedGroup = ELEMENT_GROUPS[el.sym] || "unknown";
   atomBox.classList.add("glow-highlight");
   atomBox.style.color = GROUP_COLORS[clickedGroup];
-
+ 
+  renderAtomView(el);
   addLegend();
 }
-
+ 
 /* ------------------ MODAL PATCH ------------------ */
 const _openModal = openModal;
 openModal = function (el) {
   showAtomAnimation(el);
   _openModal(el);
 };
-
+ 
 /* Speech Synthesis UI */
 function speakElement(el) {
   if (!('speechSynthesis' in window)) return;
@@ -765,7 +1019,7 @@ function speakElement(el) {
   window.speechSynthesis.cancel();
   window.speechSynthesis.speak(utter);
 }
-
+ 
 // Add speak button to modal
 const speakBtn = document.createElement('button');
 speakBtn.textContent = '🔊 Speak Info';
@@ -773,7 +1027,7 @@ speakBtn.className = 'btn';
 speakBtn.style.width = '100%';
 speakBtn.style.marginBottom = '8px';
 document.querySelector('.rightbox').insertBefore(speakBtn, document.querySelector('.rightbox').firstChild);
-
+ 
 let lastElement = null;
 function openModal(el) {
   lastElement = el;
@@ -789,12 +1043,12 @@ function openModal(el) {
   document.getElementById('mCat').textContent = CATMAP[el.cat] || el.cat;
   if (!MODAL.open) MODAL.showModal();
 }
-
+ 
 speakBtn.onclick = function() {
   if (lastElement) speakElement(lastElement);
 };
 const CATMAP = { alkali:'Alkali metal', alkaline:'Alkaline earth metal', transition:'Transition metal', post:'Post-transition metal', metalloid:'Metalloid', poly:'Polyatomic nonmetal', diatomic:'Diatomic nonmetal', halogen:'Halogen', noble:'Noble gas', lanth:'Lanthanide', act:'Actinide', unknown:'Unknown' };
-
+ 
 const TABLE = document.getElementById('table');
 const TIP = document.getElementById('tooltip');
 const SEARCH = document.getElementById('search');
@@ -804,18 +1058,18 @@ const ZSLIDER = document.getElementById('zoomSlider');
 const COMPACT = document.getElementById('compactBtn');
 const RESET = document.getElementById('resetBtn');
 const THEME = document.getElementById('themeToggle');
-
+ 
 /* Helper to create a cell */
 function createCell(el){
   const d = document.createElement('div');
   const cls = el.cat || 'unknown';
   d.className = 'cell ' + cls;
   let row = el.period; let col = el.group;
-  if(el.cat==='lanth' && el.n!==57){ row=8; col=3+(el.n-57); }
-  if(el.cat==='act' && el.n!==89){ row=9; col=3+(el.n-89); }
+  if(el.cat==='lanth' && el.n!==57){ row=9; col=3+(el.n-57); }
+  if(el.cat==='act' && el.n!==89){ row=10; col=3+(el.n-89); }
   d.style.gridRow = row; d.style.gridColumn = col;
   d.innerHTML = `<div class="atomic">${el.n}</div><div class="symbol">${el.sym}</div><div class="elname">${el.name}</div>`;
-
+ 
   d.addEventListener('mousemove',(ev)=>{
     TIP.innerHTML = `<strong style="font-size:14px">${el.sym}</strong> ${el.name}<br><span style="font-size:12px;color:#cce6ff">#${el.n} · ${el.mass}</span><br><span style="font-size:12px;color:#cce6ff">${CATMAP[el.cat]||el.cat}</span>`;
     TIP.style.left = (ev.clientX + 12) + 'px'; TIP.style.top = (ev.clientY + 12) + 'px'; TIP.classList.add('show');
@@ -824,24 +1078,25 @@ function createCell(el){
   d.addEventListener('click', ()=> openModal(el));
   return d;
 }
-
+ 
 /* render entire table */
 function render(elements=ELEMENTS){
   TABLE.innerHTML='';
-  const f1=document.createElement('div'); f1.className='f-label'; f1.style.gridRow='8'; f1.textContent='Lanthanides'; TABLE.appendChild(f1);
-  const f2=document.createElement('div'); f2.className='f-label'; f2.style.gridRow='9'; f2.textContent='Actinides'; TABLE.appendChild(f2);
+  // f-block labels on rows 9 and 10 (row 8 is gap)
+  const f1=document.createElement('div'); f1.className='f-label'; f1.style.gridRow='9'; f1.textContent='Lanthanides →'; TABLE.appendChild(f1);
+  const f2=document.createElement('div'); f2.className='f-label'; f2.style.gridRow='10'; f2.textContent='Actinides →'; TABLE.appendChild(f2);
   elements.forEach(el=> TABLE.appendChild(createCell(el)));
   // add ghost La/Ac duplicates
-  const la = elements.find(x=>x.n===57); if(la){ const g=createCell(la); g.classList.add('ghost'); g.style.gridRow='8'; g.style.gridColumn='3'; TABLE.appendChild(g);} 
-  const ac = elements.find(x=>x.n===89); if(ac){ const g2=createCell(ac); g2.classList.add('ghost'); g2.style.gridRow='9'; g2.style.gridColumn='3'; TABLE.appendChild(g2);} 
+  const la = elements.find(x=>x.n===57); if(la){ const g=createCell(la); g.classList.add('ghost'); g.style.gridRow='9'; g.style.gridColumn='3'; TABLE.appendChild(g);}
+  const ac = elements.find(x=>x.n===89); if(ac){ const g2=createCell(ac); g2.classList.add('ghost'); g2.style.gridRow='10'; g2.style.gridColumn='3'; TABLE.appendChild(g2);}
 }
-
+ 
 /* Modal */
-document.getElementById('closeModal').addEventListener('click', ()=> MODAL.close());
-
+document.getElementById('closeModal').addEventListener('click', ()=> { MODAL.close(); destroyAtom3D(); });
+ 
 /* Zoom slider controls */
 ZSLIDER.addEventListener('input', (e)=>{ document.documentElement.style.setProperty('--cell-size', e.target.value + 'px'); });
-
+ 
 /* Compact / Study toggle */
 let isCompact=true;
 COMPACT.addEventListener('click', ()=>{
@@ -849,18 +1104,18 @@ COMPACT.addEventListener('click', ()=>{
   if(isCompact){ COMPACT.textContent='Compact'; document.documentElement.style.setProperty('--cell-size','48px'); ZSLIDER.value=48; }
   else{ COMPACT.textContent='Study'; document.documentElement.style.setProperty('--cell-size','72px'); ZSLIDER.value=72; }
 });
-
+ 
 /* Theme toggle */
 let dark=false; THEME.addEventListener('click', ()=>{ dark=!dark; document.body.classList.toggle('dark', dark); });
-
+ 
 /* Reset */
 RESET.addEventListener('click', ()=>{ SEARCH.value=''; document.documentElement.style.setProperty('--cell-size','48px'); ZSLIDER.value=48; COMPACT.textContent='Compact'; isCompact=true; render(); AUTOCLOSE(); });
-
+ 
 /* Autocomplete */
 const suggestions = document.createElement('div'); suggestions.style.position='absolute'; suggestions.style.top='36px'; suggestions.style.left='0'; suggestions.style.right='0'; suggestions.style.background='white'; suggestions.style.zIndex=40; suggestions.style.borderRadius='8px'; suggestions.style.boxShadow='0 10px 30px rgba(2,8,23,0.12)'; suggestions.style.display='none'; AUTOCOMPLETE.appendChild(suggestions);
-
+ 
 function AUTOCLOSE(){ suggestions.style.display='none'; }
-
+ 
 SEARCH.addEventListener('input', ()=>{
   const q = SEARCH.value.trim().toLowerCase(); if(!q){ AUTOCLOSE(); render(); return; }
   const matches = ELEMENTS.filter(e=> e.name.toLowerCase().includes(q) || e.sym.toLowerCase().includes(q) || String(e.n)===q).slice(0,8);
@@ -875,19 +1130,20 @@ SEARCH.addEventListener('input', ()=>{
   // also highlight matches by rendering only them
   render(matches.concat([]));
 });
-
+ 
 document.addEventListener('click', (e)=>{ if(!AUTOCOMPLETE.contains(e.target) && e.target!==SEARCH) AUTOCLOSE(); });
-
+ 
 /* Legend */
 function buildLegend(){ const legend=document.getElementById('legend'); const keys=['alkali','alkaline','transition','post','metalloid','poly','diatomic','halogen','noble','lanth','act','unknown']; const labels={alkali:'Alkali metal',alkaline:'Alkaline earth metal',transition:'Transition metal',post:'Post-transition metal',metalloid:'Metalloid',poly:'Polyatomic nonmetal',diatomic:'Diatomic nonmetal',halogen:'Halogen',noble:'Noble gas',lanth:'Lanthanide',act:'Actinide',unknown:'Unknown'}; keys.forEach(k=>{ const el=document.createElement('div'); el.className='leg'; const sw=document.createElement('span'); sw.className='sw '+k; sw.style.background = window.getComputedStyle(document.documentElement).getPropertyValue('--'+k) || ''; el.appendChild(sw); const lab=document.createElement('div'); lab.textContent=labels[k]; el.appendChild(lab); legend.appendChild(el);}); }
-
+ 
 render(ELEMENTS);
 buildLegend();
-
+ 
 // Ensure tooltip hides on resize/scroll
 window.addEventListener('scroll', ()=> TIP.classList.remove('show'));
 window.addEventListener('resize', ()=> TIP.classList.remove('show'));
 </script>
-
+ 
 </body>
 </html>
+ 
