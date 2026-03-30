@@ -1,1 +1,31 @@
-<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>Elements</title>\n</head>\n<body>\n    <div id="elements">\n        <script>\n            const elements = [\n                { name: 'Hydrogen', discovered_year: 1766, discoverer: 'Henry Cavendish', historical_fact: 'First identified as a distinct element; lightest and most abundant element in the universe.' },\n                { name: 'Helium', discovered_year: 1895, discoverer: 'Sir William Ramsay', historical_fact: 'First discovered in the sun during a solar eclipse before being found on earth.' },\n                // ... all other elements with similar structure ...\n                { name: 'Oganesson', discovered_year: 2002, discoverer: 'Joint Institute for Nuclear Research and Lawrence Livermore National Laboratory', historical_fact: 'The first synthetic element in the 20th century categorized as a noble gas despite being a metalloid.' }\n            ];\n\n            function openModal(element) {\n                const modalContent = `\n                <h2>${element.name}</h2>\n                <h3>Discovered Year: ${element.discovered_year}</h3>\n                <h4>Discoverer: ${element.discoverer}</h4>\n                <p>${element.historical_fact}</p>`;\n                document.getElementById('modal').innerHTML = modalContent;\n                document.getElementById('modal').style.display = 'block';\n            }\n        </script>\n    </div>\n    <div id="modal" style="display: none;">\n        <button onclick="this.parentElement.style.display='none'">Close</button>\n    </div>\n</body>\n</html>",
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elements</title>
+  </head>
+  <body>
+    <div id="elements">
+      <script>
+        const elements = [
+          { name: 'Hydrogen', discovered_year: 1766, discoverer: 'Henry Cavendish', historical_fact: 'First identified as a distinct element; lightest and most abundant element in the universe.' },
+          { name: 'Helium', discovered_year: 1895, discoverer: 'Sir William Ramsay', historical_fact: 'First discovered in the sun during a solar eclipse before being found on earth.' },
+          { name: 'Oganesson', discovered_year: 2002, discoverer: 'Joint Institute for Nuclear Research and Lawrence Livermore National Laboratory', historical_fact: 'The first synthetic element in the 20th century categorized as a noble gas despite being a metalloid.' }
+        ];
+        function openModal(element) {
+          const modalContent = `
+          <h2>${element.name}</h2>
+          <h3>Discovered Year: ${element.discovered_year}</h3>
+          <h4>Discoverer: ${element.discoverer}</h4>
+          <p>${element.historical_fact}</p>`;
+          document.getElementById('modal').innerHTML = modalContent;
+          document.getElementById('modal').style.display = 'block';
+        }
+      </script>
+    </div>
+    <div id="modal" style="display: none;">
+      <button onclick="this.parentElement.style.display='none'">Close</button>
+    </div>
+  </body>
+</html>
