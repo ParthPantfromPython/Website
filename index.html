@@ -101,12 +101,55 @@ dialog::backdrop{background:rgba(2,8,23,0.55)}
   display:flex;flex-direction:row;gap:8px;align-items:center;
   flex-wrap:wrap;justify-content:flex-end;max-width:calc(100vw - 32px);
 }
- 
+
+body.blur{
+  filter: blur(6px);
+}
+
+.overlay{
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  backdrop-filter: blur(6px);
+  background: rgba(0,0,0,0.3);
+  z-index: 150;
+  display: none;
+}
+
+.overlay.active{
+  display: block;
+}
 /* ── QUIZ / LOGIN / SHORTCUT PANELS ── */
+#quizBox {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -60%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
 .panel{
-  max-width:500px;width:calc(100% - 32px);margin:16px auto 0;
-  background:var(--card);border-radius:14px;
-  box-shadow:0 8px 32px rgba(2,8,23,0.10);padding:20px;display:none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  max-width: 500px;
+  width: 90%;
+  background: var(--card);
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  padding: 20px;
+  display: none;
+  z-index: 200;
+  transition: all 0.25s ease;
+}
+
+.panel.active{
+  display: block;
+  transform: translate(-50%, -50%) scale(1);
+}
 }
 .login-panel{
   max-width:400px;width:calc(100% - 32px);
@@ -180,9 +223,11 @@ body.dark .legend .leg{background:linear-gradient(180deg,#0e1f3a,#081428);color:
 </header>
  
 <!-- Quiz UI -->
+<div id="overlay" class="overlay"></div>
 <section id="quizBox" class="panel">
   <div style="font-weight:700;font-size:1.3rem;margin-bottom:10px;color:var(--accent)">Periodic Table Quiz</div>
   <div style="margin-bottom:12px">
+    <button onclick="closeQuiz()" style="float:right" class="btn">✖</button>
     <label for="quizMode" style="font-size:14px;font-weight:600">Select Mode:</label>
     <select id="quizMode" style="margin-left:8px;padding:6px 10px;border-radius:8px">
       <option value="easy">Easy (5 Qs, 1–20)</option>
@@ -217,9 +262,22 @@ let quizTotal = 0;
 let quizNegative = 0;
  
 // Show/hide quiz box
+const overlay = document.getElementById('overlay');
+
 quizToggle.addEventListener('click', ()=>{
-  quizBox.style.display = quizBox.style.display==='none' ? 'block' : 'none';
+  quizBox.classList.add('active');
+  overlay.classList.add('active');
 });
+
+overlay.addEventListener('click', ()=>{
+  quizBox.classList.remove('active');
+  overlay.classList.remove('active');
+});
+
+function closeQuiz(){
+  quizBox.classList.remove('active');
+  overlay.classList.remove('active');
+}
  
 // Start quiz
 startQuiz.addEventListener('click', ()=>{
@@ -250,15 +308,23 @@ stopQuiz.addEventListener('click', ()=>{
 });
  
 // Show question
+let timer;
+let timeLeft = 100;
 function showQuizQuestion(){
-  if(!quizActive || quizIndex >= quizElements.length){
-    quizArea.innerHTML = `<div style="font-size:16px;font-weight:700;margin-bottom:8px">Quiz Complete!</div>
-      <div>Your score: <strong>${quizScore} / ${quizTotal}</strong></div>
-      <button class="btn" id="quizRestart" style="margin-top:12px">Restart</button>`;
-    stopQuiz.style.display = 'none';
-    document.getElementById('quizRestart').onclick = ()=>{ startQuiz.click(); };
-    quizActive = false;
-    return;
+  timeLeft = 100;
+document.getElementById('timer').textContent = timeLeft;
+
+timer = setInterval(()=>{
+  timeLeft--;
+  document.getElementById('timer').textContent = timeLeft;
+
+  if(timeLeft <= 0){
+    clearInterval(timer);
+    quizScore -= quizNegative;
+    quizIndex++;
+    showQuizQuestion();
+  }
+},1000);
   }
   const el = quizElements[quizIndex];
   const qType = Math.random()<0.5 ? 'name' : 'symbol';
@@ -270,31 +336,63 @@ function showQuizQuestion(){
     question = `What is the name of the element with symbol <strong>${el.sym}</strong>?`;
     answer = el.name;
   }
-  quizArea.innerHTML = `
-    <div style="font-size:15px;margin-bottom:10px">${question}</div>
-    <input id="quizInput" class="input" placeholder="Your answer" autocomplete="off" style="width:70%">
-    <button id="quizSubmit" class="btn" style="margin-left:10px">Submit</button>
-    <div id="quizFeedback" style="margin-top:10px;font-size:13px"></div>
-    <div style="margin-top:14px;color:var(--muted);font-size:13px">Question ${quizIndex+1} of ${quizTotal} | Score: ${quizScore}</div>
-    <div style="margin-top:4px;color:#f87171;font-size:12px">Negative marking: -${quizNegative} for wrong answer</div>
-  `;
-  document.getElementById('quizSubmit').onclick = ()=>{
-    const val = document.getElementById('quizInput').value.trim();
-    const correct = val.toLowerCase() === answer.toLowerCase();
-    const feedback = document.getElementById('quizFeedback');
-    if(correct){
-      feedback.textContent = '✅ Correct!';
-      quizScore++;
-    }else{
-      feedback.textContent = `❌ Incorrect. Correct answer: ${answer} (-${quizNegative})`;
-      quizScore -= quizNegative;
-      if(quizScore<0) quizScore=0;
-    }
-    setTimeout(()=>{ quizIndex++; showQuizQuestion(); }, 900);
-  };
-  document.getElementById('quizInput').addEventListener('keydown', function(e){
-    if(e.key==='Enter') document.getElementById('quizSubmit').click();
-  });
+ quizArea.innerHTML = `
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <div>Question ${quizIndex+1}/${quizTotal}</div>
+    <div>⏱️ <span id="timer">10</span>s</div>
+  </div>
+
+  <div style="height:6px;background:#ddd;border-radius:10px;margin-bottom:12px;">
+    <div id="progressBar" style="height:100%;width:${(quizIndex/quizTotal)*100}%;background:var(--accent);border-radius:10px;"></div>
+  </div>
+
+  <div style="font-size:16px;margin-bottom:12px">${question}</div>
+
+  <input id="quizInput" class="input" placeholder="Your answer" autocomplete="off">
+
+  <button id="quizSubmit" class="btn" style="margin-top:10px">Submit</button>
+
+  <div id="quizFeedback" style="margin-top:10px;font-size:13px"></div>
+
+  <div style="margin-top:12px;font-size:13px">
+    Score: <strong>${quizScore}</strong> |
+    High Score: <strong>${localStorage.getItem('highScore') || 0}</strong>
+  </div>
+`;
+ document.getElementById('quizSubmit').onclick = ()=>{
+  clearInterval(timer);
+
+  const val = document.getElementById('quizInput').value.trim();
+  const correct = val.toLowerCase() === answer.toLowerCase();
+  const feedback = document.getElementById('quizFeedback');
+
+  if(correct){
+    feedback.textContent = '✅ Correct!';
+    quizScore++;
+    playSound(true);
+  }else{
+    feedback.textContent = `❌ Wrong! Correct: ${answer}`;
+    quizScore -= quizNegative;
+    if(quizScore<0) quizScore=0;
+    playSound(false);
+  }
+
+  setTimeout(()=>{
+    quizIndex++;
+    showQuizQuestion();
+  },800);
+};
+let highScore = localStorage.getItem('highScore') || 0;
+if(quizScore > highScore){
+  localStorage.setItem('highScore', quizScore);
+}
+function playSound(correct){
+  const audio = new Audio(
+    correct 
+    ? "https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"
+    : "https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"
+  );
+  audio.play();
 }
 </script>
  
