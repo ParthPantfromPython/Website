@@ -186,6 +186,10 @@ body.dark .legend .leg{background:linear-gradient(180deg,#0e1f3a,#081428);color:
   .elname{display:none}
   .symbol{font-size:9px}
 }
+.modal {
+  max-height: 90vh;
+  overflow-y: auto;
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
@@ -571,10 +575,20 @@ document.addEventListener('keydown', function(e) {
       </div>
       <div style="margin-top:8px;color:#cfe6ff" id="mAbout">—</div>
       <div class="meta">
-        <div class="mitem">Atomic mass<br><strong id="mMass">1.008</strong></div>
-        <div class="mitem">Electron config<br><strong id="mConfig">1s1</strong></div>
-        <div class="mitem">Period / Group<br><strong id="mPG">1 / 1</strong></div>
-        <div class="mitem">State @ STP<br><strong id="mState">gas</strong></div>
+        <div class="mitem">Uses<br><strong id="mUses">—</strong></div>
+        <div class="mitem">Discovery<br><strong id="mDiscovery">—</strong></div>
+        <div class="mitem">Fun Fact<br><strong id="mFun">—</strong></div>
+        <div class="mitem">Density<br><strong id="mDensity">—</strong></div>
+        <div class="mitem">Melting Point<br><strong id="mMelting">—</strong></div>
+        <div class="mitem">Boiling Point<br><strong id="mBoiling">—</strong></div>
+        <div class="mitem">Electronegativity<br><strong id="mElectro">—</strong></div>
+        <div class="mitem">Ionization Energy<br><strong id="mIon">—</strong></div>
+        <div class="mitem">Valency<br><strong id="mValency">—</strong></div>
+        <div class="mitem">Atomic Radius<br><strong id="mRadius">—</strong></div>
+        <div class="mitem">Block<br><strong id="mBlock">—</strong></div>
+        <div class="mitem">Color<br><strong id="mColor">—</strong></div>
+        <div class="mitem">Radioactive<br><strong id="mRadio">—</strong></div>
+        <div class="mitem">Common Compounds<br><strong id="mCompounds">—</strong></div>
       </div>
     </div>
     <div class="rightbox">
@@ -1139,6 +1153,20 @@ function openModal(el) {
   document.getElementById('mState').textContent = el.state || '—';
   document.getElementById('mQuick').textContent = `${el.sym} — ${el.name}`;
   document.getElementById('mCat').textContent = CATMAP[el.cat] || el.cat;
+  document.getElementById('mUses').textContent = el.uses || '—';
+  document.getElementById('mDiscovery').textContent = el.discovery || '—';
+  document.getElementById('mFun').textContent = el.fun || '—';
+  document.getElementById('mDensity').textContent = el.density || '—';
+  document.getElementById('mMelting').textContent = el.melting || '—';
+  document.getElementById('mBoiling').textContent = el.boiling || '—';
+  document.getElementById('mElectro').textContent = el.electronegativity || '—';
+  document.getElementById('mIon').textContent = el.ionizationEnergy || '—';
+  document.getElementById('mValency').textContent = el.valency || '—';
+  document.getElementById('mRadius').textContent = el.atomicRadius || '—';
+  document.getElementById('mBlock').textContent = el.block || '—';
+  document.getElementById('mColor').textContent = el.color || '—';
+  document.getElementById('mRadio').textContent = el.radioactive || '—';
+  document.getElementById('mCompounds').textContent = el.commonCompounds || '—';
   if (!MODAL.open) MODAL.showModal();
 }
  
